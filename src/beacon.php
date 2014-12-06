@@ -43,6 +43,7 @@ class MCD_Beacon {
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_action( 'init', array( $this, 'handle_report_uri' ) );
 	}
 
 	/**
@@ -100,6 +101,21 @@ class MCD_Beacon {
 		);
 
 		register_post_type( 'csp-reports', $args );
+	}
+
+	/**
+	 * Handle routing of the beacon request.
+	 *
+	 * This function identifies the beacon request and sets into motion the actions to record the beacon data.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @return void
+	 */
+	public function handle_report_uri() {
+		if ( isset( $_GET['mcd'] ) && 'report' === $_GET['mcd'] ) {
+
+		}
 	}
 }
 endif;
