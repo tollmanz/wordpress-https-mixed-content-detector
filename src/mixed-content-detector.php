@@ -89,6 +89,9 @@ class MCD_Mixed_Content_Detector {
 		$this->root_dir  = dirname( __FILE__ );
 		$this->file_path = $this->root_dir . '/' . basename( __FILE__ );
 		$this->url_base  = untrailingslashit( plugins_url( '/', __FILE__ ) );
+
+		// Include dependent files
+		include $this->root_dir . '/modes/live-check.php';
 	}
 }
 endif;
