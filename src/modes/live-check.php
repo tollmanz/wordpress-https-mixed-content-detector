@@ -66,7 +66,7 @@ class MCD_Live_Mode {
 	 * @return string    The CPS header string.
 	 */
 	public function get_cps_header() {
-		return 'Content-Security-Policy-Report-Only: default-src https:; report-uri /?mcd=report';
+		return 'Content-Security-Policy-Report-Only: default-src https:; report-uri ' . MCD_REPORT_URI;
 	}
 }
 endif;
