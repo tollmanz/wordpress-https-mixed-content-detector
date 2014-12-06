@@ -41,7 +41,66 @@ class MCD_Beacon {
 	 *
 	 * @return MCD_Beacon
 	 */
-	public function __construct() {}
+	public function __construct() {
+		add_action( 'init', array( $this, 'register_post_type' ) );
+	}
+
+	/**
+	 * Register the post type to hold the CSP reports.
+	 *
+	 * The CSP report only header will be passing information about assets to the beacon URL. The data sent to the
+	 * beacon will be held in a CPT. This function sets up that CPT.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @return void
+	 */
+	public function register_post_type() {
+		$args = array(
+			'description'         => __( 'Holds Content Security Policy violation logs.', 'zdt-mcd' ),
+			'public'              => true,
+			'publicly_queryable'  => false,
+			'exclude_from_search' => true,
+			'show_in_nav_menus'   => false,
+			'show_ui'             => true,
+			'show_in_menu'        => true,
+			'show_in_admin_bar'   => false,
+			'menu_position'       => 25,
+			'menu_icon'           => null,
+			'can_export'          => false,
+			'delete_with_user'    => false,
+			'hierarchical'        => false,
+			'has_archive'         => false,
+			'query_var'           => true,
+			'capability_type'     => 'post',
+			'map_meta_cap'        => false,
+			'rewrite'             => false,
+			'supports'            => array(
+				'title',
+				'comments',
+			),
+			'labels'              => array(
+				'name'               => __( 'Content Security Policy Report', 'zdt-mcd' ),
+				'singular_name'      => __( 'Content Security Policy Report', 'zdt-mcd' ),
+				'menu_name'          => __( 'Content Security Policy Reports', 'zdt-mcd' ),
+				'name_admin_bar'     => __( 'Content Security Policy Reports', 'zdt-mcd' ),
+				'add_new'            => __( 'Add New', 'zdt-mcd' ),
+				'add_new_item'       => __( 'Add New Content Security Policy Report', 'zdt-mcd' ),
+				'edit_item'          => __( 'Edit Content Security Policy Report', 'zdt-mcd' ),
+				'new_item'           => __( 'New Content Security Policy Report', 'zdt-mcd' ),
+				'view_item'          => __( 'View Content Security Policy Report', 'zdt-mcd' ),
+				'search_items'       => __( 'Search Content Security Policy Reports', 'zdt-mcd' ),
+				'not_found'          => __( 'No Content Security Policy Reports found', 'zdt-mcd' ),
+				'not_found_in_trash' => __( 'No Content Security Policy Reports found in trash', 'zdt-mcd' ),
+				'all_items'          => __( 'All Content Security Policy Reports', 'zdt-mcd' ),
+				'parent_item'        => __( 'Parent Content Security Policy Report', 'zdt-mcd' ),
+				'parent_item_colon'  => __( 'Parent Content Security Policy Report:', 'zdt-mcd' ),
+				'archive_title'      => __( 'Content Security Policy Reports', 'zdt-mcd' ),
+			)
+		);
+
+		register_post_type( 'csp-reports', $args );
+	}
 }
 endif;
 
