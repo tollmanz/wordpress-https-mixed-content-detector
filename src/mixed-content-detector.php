@@ -100,8 +100,8 @@ endif;
  *
  * @return MCD_Mixed_Content_Detector
  */
-function MCD_Mixed_Content_Detector() {
+function mcd_get_mixed_content_detector() {
 	return MCD_Mixed_Content_Detector::instance();
 }
 
-MCD_Mixed_Content_Detector();
+mcd_get_mixed_content_detector();
