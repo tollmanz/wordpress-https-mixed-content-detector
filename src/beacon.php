@@ -100,7 +100,7 @@ class MCD_Beacon {
 			)
 		);
 
-		register_post_type( 'csp-reports', $args );
+		register_post_type( 'csp-report', $args );
 	}
 
 	/**
