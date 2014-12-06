@@ -114,7 +114,15 @@ class MCD_Beacon {
 	 */
 	public function handle_report_uri() {
 		if ( isset( $_GET['mcd'] ) && 'report' === $_GET['mcd'] ) {
+			$contents = json_decode( file_get_contents( 'php://input' ), true );
 
+			wp_insert_post( array(
+				'post_type'    => 'csp-report',
+				'post_title'    => $contents['csp-report']['blocked-uri'],
+				'post_content' => $contents,
+			) );
+
+			exit();
 		}
 	}
 }
