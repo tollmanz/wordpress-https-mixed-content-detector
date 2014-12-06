@@ -91,6 +91,7 @@ class MCD_Mixed_Content_Detector {
 		$this->url_base  = untrailingslashit( plugins_url( '/', __FILE__ ) );
 
 		// Include dependent files
+		include $this->root_dir . '/beacon.php';
 		include $this->root_dir . '/modes/live-check.php';
 	}
 }
