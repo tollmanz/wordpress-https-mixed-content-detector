@@ -73,8 +73,6 @@ class MCD_Beacon {
 			'hierarchical'        => false,
 			'has_archive'         => false,
 			'query_var'           => true,
-			'capability_type'     => 'post',
-			'map_meta_cap'        => false,
 			'rewrite'             => false,
 			'supports'            => array(
 				'title',
