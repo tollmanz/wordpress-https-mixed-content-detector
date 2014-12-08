@@ -76,7 +76,6 @@ class MCD_Beacon {
 			'rewrite'             => false,
 			'supports'            => array(
 				'title',
-				'comments',
 			),
 			'labels'              => array(
 				'name'               => __( 'Content Security Policy Report', 'zdt-mcd' ),
