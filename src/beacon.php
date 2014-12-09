@@ -111,17 +111,108 @@ class MCD_Beacon {
 	 * @return void
 	 */
 	public function handle_report_uri() {
-		if ( isset( $_GET['mcd'] ) && 'report' === $_GET['mcd'] ) {
-			$contents = json_decode( file_get_contents( 'php://input' ), true );
-
-			wp_insert_post( array(
-				'post_type'    => 'csp-report',
-				'post_title'    => $contents['csp-report']['blocked-uri'],
-				'post_content' => $contents,
-			) );
-
-			exit();
+		// Only works for a logged in user
+		if ( ! is_user_logged_in() ) {
+			return;
 		}
+
+		// Check to make sure the a beacon request has been made
+		if ( ! isset( $_GET['mcd'] ) || 'report' !== $_GET['mcd'] ) {
+			return;
+		}
+
+		// Verify the nonce is set
+		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'mcd-report-uri' ) ) {
+			return;
+		}
+
+		// Grab the contents of the request
+		$contents = json_decode( file_get_contents( 'php://input' ), true );
+
+		// Make sure the expected data is sent with the request
+		if ( ! isset( $contents['csp-report'] ) ) {
+			return;
+		}
+
+		$clean_data = array();
+
+		// Cycle through each field in the report to make sure it is whitelisted
+		foreach ( $contents['csp-report'] as $field => $value ) {
+			// Verify that the field is valid
+			if ( in_array( $field, array_keys( $this->whitelisted_fields() ) ) ) {
+				$fields = $this->whitelisted_fields();
+
+				// Make sure that the sanitize callback is legit
+				if ( is_callable( $fields[ $field ]['sanitize_callback'] ) ) {
+					// Sanitize the value
+					$clean_data[ $field ] = call_user_func_array(
+						$fields[ $field ]['sanitize_callback'],
+						array(
+							$value
+						)
+					);
+				}
+			}
+		}
+
+		// Add a post for the report
+		$post_id = (int) wp_insert_post( array(
+			'post_type'    => 'csp-report',
+			'post_status'  => 'publish',
+			'post_title'   => esc_url( $contents['csp-report']['blocked-uri'] ),
+			'post_content' => json_encode( $clean_data ),
+		) );
+
+		// If the post was successfully inserted, add the metadata
+		if ( $post_id > 0 ) {
+			foreach ( $clean_data as $key => $value ) {
+				update_post_meta( $post_id, $key, $value );
+			}
+		}
+
+		exit();
+	}
+
+	/**
+	 * Return the allowed fields for a CSP report.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @return array    The list of allowed fields.
+	 */
+	public function whitelisted_fields() {
+		return array(
+			'blocked-uri'        => array(
+				'sanitize_callback' => 'esc_url',
+			),
+			'document-uri'       => array(
+				'sanitize_callback' => 'esc_url',
+			),
+			'original-policy'    => array(
+				'sanitize_callback' => array( $this, 'sanitize_directive' ),
+			),
+			'referrer'           => array(
+				'sanitize_callback' => 'esc_url',
+			),
+			'status-code'        => array(
+				'sanitize_callback' => 'absint',
+			),
+			'violated-directive' => array(
+				'sanitize_callback' => array( $this, 'sanitize_directive' ),
+			),
+		);
+	}
+
+	/**
+	 * Sanitize the directive passed from the callback.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @param  string    $value    The unsanitized directive value.
+	 * @return string              The sanitized value.
+	 */
+	public function sanitize_directive( $value ) {
+		return $value;
 	}
 }
 endif;
