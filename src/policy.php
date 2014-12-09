@@ -53,6 +53,10 @@ class MCD_Policy {
 	 * @return void
 	 */
 	public function add_cps_header() {
+		if ( ! is_user_logged_in() ) {
+			return;
+		}
+
 		$monitor_admin     = defined( 'MCD_MONITOR_ADMIN' ) && true === MCD_MONITOR_ADMIN && is_admin();
 		$monitor_front_end = defined( 'MCD_MONITOR_FRONT_END' ) && true === MCD_MONITOR_FRONT_END && ! is_admin();
 
