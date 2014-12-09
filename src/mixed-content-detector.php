@@ -109,4 +109,4 @@ function mcd_get_mixed_content_detector() {
 	return MCD_Mixed_Content_Detector::instance();
 }
 
-mcd_get_mixed_content_detector();
+add_action( 'init', 'mcd_get_mixed_content_detector', 1 );

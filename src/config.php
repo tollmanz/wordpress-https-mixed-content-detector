@@ -4,18 +4,15 @@
  *
  * @since 1.0.0.
  */
-define( 'MCD_REPORT_URI', site_url( '/?mcd=report' ) );
+define( 'MCD_REPORT_URI', site_url( '/?mcd=report&nonce=' . wp_create_nonce( 'mcd-report-uri' ) ) );
 
 /**
  * Define the policies to monitor for.
  *
  * @since 1.0.0.
  */
-if ( ! defined( 'MCD_POLICIES' ) ) {
-	define( 'MCD_POLICIES', array(
-		'default-src https:',
-		'report-uri ' . $this->get_report_url()
-	) );
+if ( ! defined( 'MCD_POLICY' ) ) {
+	define( 'MCD_POLICY', 'default-src https:; report-uri ' . MCD_REPORT_URI );
 }
 
 /**

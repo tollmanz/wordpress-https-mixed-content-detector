@@ -82,7 +82,7 @@ class MCD_Policy {
 	 * @return string    The full policy
 	 */
 	public function get_full_policy() {
-		return implode( '; ', $this->get_policies() );
+		return MCD_POLICY;
 	}
 
 	/**
@@ -93,7 +93,7 @@ class MCD_Policy {
 	 * @return array    Array of CSP policies.
 	 */
 	public function get_policies() {
-		return MCD_POLICIES;
+		return explode( '; ', MCD_POLICY );
 	}
 
 	/**
@@ -104,7 +104,7 @@ class MCD_Policy {
 	 * @return string    The full URL for the report.
 	 */
 	public function get_report_url() {
-		return MCD_REPORT_URI . '&nonce=' . wp_create_nonce( 'mcd-report-uri' );
+		return MCD_REPORT_URI;
 	}
 }
 endif;
