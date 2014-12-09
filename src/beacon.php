@@ -112,17 +112,17 @@ class MCD_Beacon {
 	public function handle_report_uri() {
 		// Only works for a logged in user
 		if ( ! is_user_logged_in() ) {
-			return;
+			exit();
 		}
 
 		// Check to make sure the a beacon request has been made
 		if ( ! isset( $_GET['mcd'] ) || 'report' !== $_GET['mcd'] ) {
-			return;
+			exit();
 		}
 
 		// Verify the nonce is set
 		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'mcd-report-uri' ) ) {
-			return;
+			exit();
 		}
 
 		// Grab the contents of the request
@@ -130,7 +130,7 @@ class MCD_Beacon {
 
 		// Make sure the expected data is sent with the request
 		if ( ! isset( $contents['csp-report'] ) ) {
-			return;
+			exit();
 		}
 
 		$clean_data = array();
