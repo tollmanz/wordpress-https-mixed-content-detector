@@ -93,7 +93,7 @@ class MCD_Mixed_Content_Detector {
 		// Include dependent files
 		include $this->root_dir . '/config.php';
 		include $this->root_dir . '/beacon.php';
-		include $this->root_dir . '/modes/live-check.php';
+		include $this->root_dir . '/policy.php';
 	}
 }
 endif;

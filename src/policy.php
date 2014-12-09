@@ -1,27 +1,27 @@
 <?php
 
-if ( ! class_exists( 'MCD_Live_Mode' ) ) :
+if ( ! class_exists( 'MCD_Policy' ) ) :
 /**
  * Bootstrap functionality for the plugin.
  *
  * @since 1.0.0.
  */
-class MCD_Live_Mode {
+class MCD_Policy {
 	/**
-	 * The one instance of MCD_Live_Mode.
+	 * The one instance of MCD_Policy.
 	 *
 	 * @since 1.0.0.
 	 *
-	 * @var   MCD_Live_Mode
+	 * @var   MCD_Policy
 	 */
 	private static $instance;
 
 	/**
-	 * Instantiate or return the one MCD_Live_Mode instance.
+	 * Instantiate or return the one MCD_Policy instance.
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @return MCD_Live_Mode
+	 * @return MCD_Policy
 	 */
 	public static function instance() {
 		if ( is_null( self::$instance ) ) {
@@ -36,7 +36,7 @@ class MCD_Live_Mode {
 	 *
 	 * @since  1.0.0.
 	 *
-	 * @return MCD_Live_Mode
+	 * @return MCD_Policy
 	 */
 	public function __construct() {
 		add_action( 'init', array( $this, 'add_cps_header' ) );
@@ -113,14 +113,14 @@ class MCD_Live_Mode {
 endif;
 
 /**
- * Get the one instance of the MCD_Live_Mode.
+ * Get the one instance of the MCD_Policy.
  *
  * @since  1.0.0.
  *
- * @return MCD_Live_Mode
+ * @return MCD_Policy
  */
-function mcd_get_live_mode() {
-	return MCD_Live_Mode::instance();
+function mcd_get_policy() {
+	return MCD_Policy::instance();
 }
 
-mcd_get_live_mode();
+mcd_get_policy();

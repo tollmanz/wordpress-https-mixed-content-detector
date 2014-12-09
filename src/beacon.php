@@ -233,7 +233,7 @@ class MCD_Beacon {
 	 * @return string              The sanitized value.
 	 */
 	public function sanitize_original_policy( $value ) {
-		if ( mcd_get_live_mode()->get_full_policy() === $value ) {
+		if ( mcd_get_policy()->get_full_policy() === $value ) {
 			return $value;
 		} else {
 			return '';
@@ -250,7 +250,7 @@ class MCD_Beacon {
 	 */
 	public function sanitize_violated_directive( $value ) {
 		// Grab the whitelisted policy values
-		$whitelisted_values = mcd_get_live_mode()->get_policies();
+		$whitelisted_values = mcd_get_policy()->get_policies();
 
 		if ( in_array( $value, $whitelisted_values ) ) {
 			return $value;
