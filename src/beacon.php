@@ -189,7 +189,7 @@ class MCD_Beacon {
 				'sanitize_callback' => 'esc_url',
 			),
 			'original-policy'    => array(
-				'sanitize_callback' => array( $this, 'sanitize_directive' ),
+				'sanitize_callback' => array( $this, 'sanitize_original_policy' ),
 			),
 			'referrer'           => array(
 				'sanitize_callback' => 'esc_url',
@@ -198,7 +198,7 @@ class MCD_Beacon {
 				'sanitize_callback' => 'absint',
 			),
 			'violated-directive' => array(
-				'sanitize_callback' => array( $this, 'sanitize_directive' ),
+				'sanitize_callback' => array( $this, 'sanitize_violated_directive' ),
 			),
 		);
 	}
@@ -225,6 +225,22 @@ class MCD_Beacon {
 	}
 
 	/**
+	 * Sanitize the original policy passed from the callback.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @param  string    $value    The unsanitized policy value.
+	 * @return string              The sanitized value.
+	 */
+	public function sanitize_original_policy( $value ) {
+		if ( mcd_get_live_mode()->get_full_policy() === $value ) {
+			return $value;
+		} else {
+			return '';
+		}
+	}
+
+	/**
 	 * Sanitize the directive passed from the callback.
 	 *
 	 * @since  1.0.0.
@@ -232,8 +248,15 @@ class MCD_Beacon {
 	 * @param  string    $value    The unsanitized directive value.
 	 * @return string              The sanitized value.
 	 */
-	public function sanitize_directive( $value ) {
-		return $value;
+	public function sanitize_violated_directive( $value ) {
+		// Grab the whitelisted policy values
+		$whitelisted_values = mcd_get_live_mode()->get_policies();
+
+		if ( in_array( $value, $whitelisted_values ) ) {
+			return $value;
+		} else {
+			return '';
+		}
 	}
 }
 endif;

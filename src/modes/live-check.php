@@ -71,8 +71,43 @@ class MCD_Live_Mode {
 	 * @return string    The CPS header string.
 	 */
 	public function get_cps_header() {
-		$report_url = MCD_REPORT_URI . '&nonce=' . wp_create_nonce( 'mcd-report-uri' );
-		return 'Content-Security-Policy-Report-Only: default-src https:; report-uri ' . $report_url;
+		return 'Content-Security-Policy-Report-Only: ' . $this->get_full_policy();
+	}
+
+	/**
+	 * Create the policy from the individual policies.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @return string    The full policy
+	 */
+	public function get_full_policy() {
+		return implode( '; ', $this->get_policies() );
+	}
+
+	/**
+	 * Return an array of policies for CSP.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @return array    Array of CSP policies.
+	 */
+	public function get_policies() {
+		return array(
+			'default-src https:',
+			'report-uri ' . $this->get_report_url()
+		);
+	}
+
+	/**
+	 * Get the full report URI.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @return string    The full URL for the report.
+	 */
+	public function get_report_url() {
+		return MCD_REPORT_URI . '&nonce=' . wp_create_nonce( 'mcd-report-uri' );
 	}
 }
 endif;
