@@ -76,7 +76,6 @@ class MCD_Beacon {
 			'rewrite'             => false,
 			'supports'            => array(
 				'title',
-				'editor',
 			),
 			'labels'              => array(
 				'name'               => __( 'Content Security Policy Report', 'zdt-mcd' ),
@@ -157,10 +156,9 @@ class MCD_Beacon {
 
 		// Add a post for the report
 		$post_id = (int) wp_insert_post( array(
-			'post_type'    => 'csp-report',
-			'post_status'  => 'publish',
-			'post_title'   => $this->sanitize_blocked_uri( $contents['csp-report']['blocked-uri'] ),
-			'post_content' => json_encode( $clean_data ),
+			'post_type'   => 'csp-report',
+			'post_status' => 'publish',
+			'post_title'  => $this->sanitize_blocked_uri( $contents['csp-report']['blocked-uri'] ),
 		) );
 
 		// If the post was successfully inserted, add the metadata
