@@ -159,7 +159,7 @@ class MCD_Beacon {
 		$post_id = (int) wp_insert_post( array(
 			'post_type'    => 'csp-report',
 			'post_status'  => 'publish',
-			'post_title'   => esc_url( $contents['csp-report']['blocked-uri'] ),
+			'post_title'   => $this->sanitize_blocked_uri( $contents['csp-report']['blocked-uri'] ),
 			'post_content' => json_encode( $clean_data ),
 		) );
 
