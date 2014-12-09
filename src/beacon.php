@@ -183,7 +183,7 @@ class MCD_Beacon {
 	public function whitelisted_fields() {
 		return array(
 			'blocked-uri'        => array(
-				'sanitize_callback' => 'esc_url',
+				'sanitize_callback' => array( $this, 'sanitize_blocked_uri' ),
 			),
 			'document-uri'       => array(
 				'sanitize_callback' => 'esc_url',
@@ -201,6 +201,25 @@ class MCD_Beacon {
 				'sanitize_callback' => array( $this, 'sanitize_directive' ),
 			),
 		);
+	}
+
+	/**
+	 * Sanitize the blocked URI passed from the callback.
+	 *
+	 * The values passed as blocked URI are generally URLs; however, there is at least one special case, "data", which
+	 * represents a data URI. In this case, do not sanitize the value as a URL; just return "data".
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @param  string    $value    The unsanitized blocked URI value.
+	 * @return string              The sanitized value.
+	 */
+	public function sanitize_blocked_uri( $value ) {
+		if ( 'data' === trim( $value ) ) {
+			return 'data';
+		} else {
+			return esc_url( $value );
+		}
 	}
 
 	/**
