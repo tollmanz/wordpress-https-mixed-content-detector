@@ -215,8 +215,10 @@ class MCD_Beacon {
 	 * @return string              The sanitized value.
 	 */
 	public function sanitize_blocked_uri( $value ) {
-		if ( 'data' === trim( $value ) ) {
+		if ( 'data' === trim( $value ) ) { // Data URI
 			return 'data';
+		} elseif ( '' === trim( $value ) ) { // The root document
+			return site_url();
 		} else {
 			return esc_url( $value );
 		}
