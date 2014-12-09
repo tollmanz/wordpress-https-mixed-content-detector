@@ -71,7 +71,8 @@ class MCD_Live_Mode {
 	 * @return string    The CPS header string.
 	 */
 	public function get_cps_header() {
-		return 'Content-Security-Policy-Report-Only: default-src https:; report-uri ' . MCD_REPORT_URI;
+		$report_url = MCD_REPORT_URI . '&nonce=' . wp_create_nonce( 'mcd-report-uri' );
+		return 'Content-Security-Policy-Report-Only: default-src https:; report-uri ' . $report_url;
 	}
 }
 endif;
