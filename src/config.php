@@ -7,6 +7,18 @@
 define( 'MCD_REPORT_URI', site_url( '/?mcd=report' ) );
 
 /**
+ * Define the policies to monitor for.
+ *
+ * @since 1.0.0.
+ */
+if ( ! defined( 'MCD_POLICIES' ) ) {
+	define( 'MCD_POLICIES', array(
+		'default-src https:',
+		'report-uri ' . $this->get_report_url()
+	) );
+}
+
+/**
  * Determine whether or not to monitor admin mixed content warnings.
  *
  * @since 1.0.0.

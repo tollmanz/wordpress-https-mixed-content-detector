@@ -93,10 +93,7 @@ class MCD_Policy {
 	 * @return array    Array of CSP policies.
 	 */
 	public function get_policies() {
-		return array(
-			'default-src https:',
-			'report-uri ' . $this->get_report_url()
-		);
+		return MCD_POLICIES;
 	}
 
 	/**
