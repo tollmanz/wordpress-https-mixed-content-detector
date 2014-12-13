@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== HTTPS Mixed Content Detector ===
 Contributors: tollmanz
 Tags: https, tls, ssl
 Requires at least: 4.0.1
