@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name:    Mixed Content Detector
- * Plugin URI:     https://github.com/tollmanz/wordpress-mixed-content-detector
+ * Plugin Name:    HTTPS Mixed Content Detector
+ * Plugin URI:     https://github.com/tollmanz/wordpress-https-mixed-content-detector
  * Description:    A tool for proactively detecting mixed content issues in TLS enabled WordPress websites.
  * Version:        1.0.0.
  * Author:         Zack Tollman
- * Author URI:     http://tollmanz.com
+ * Author URI:     https://www.tollmanz.com
  * License:        GPLv2 or later
  * License URI:    http://www.gnu.org/licenses/gpl-2.0.html
  */
