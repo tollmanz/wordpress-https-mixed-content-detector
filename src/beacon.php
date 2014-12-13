@@ -42,7 +42,11 @@ class MCD_Beacon {
 	 * @return MCD_Beacon
 	 */
 	public function __construct() {
+		// Register and customize the CPT to hold the logs
 		add_action( 'init', array( $this, 'register_post_type' ) );
+		add_filter( 'manage_edit-csp-report_columns', array( $this, 'manage_edit_csp_report_columns' ) );
+		add_action( 'manage_csp-report_posts_custom_column' , array( $this, 'manage_csp_report_posts_custom_column' ), 10, 2 );
+
 		add_action( 'init', array( $this, 'handle_report_uri' ) );
 	}
 
@@ -98,6 +102,56 @@ class MCD_Beacon {
 		);
 
 		register_post_type( 'csp-report', $args );
+	}
+
+	/**
+	 * Register new columns for the CSP Report list table.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @param  array    $columns    The current list of columns.
+	 * @return array                Modified list of columns.
+	 */
+	public function manage_edit_csp_report_columns( $columns ) {
+		unset( $columns['title'] );
+
+		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mdc' );
+		$columns['document-uri']       = __( 'Document URI', 'zdt-mdc' );
+		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
+		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
+
+		return $columns;
+	}
+
+	/**
+	 * Print content for the custom columns.
+	 *
+	 * @since  1.0.0.
+	 *
+	 * @param  string    $column     The column identifier.
+	 * @param  int       $post_id    The post ID for the current item.
+	 * @return void
+	 */
+	public function manage_csp_report_posts_custom_column( $column, $post_id ) {
+		switch ( $column ) {
+			case 'blocked-uri' :
+				echo esc_url( get_the_title( $post_id ) );
+				break;
+
+			case 'document-uri' :
+				echo esc_url( get_post_meta( $post_id , 'document-uri' , true ) );
+				break;
+
+			case 'referrer' :
+				$referrer = get_post_meta( $post_id , 'document-uri' , true );
+				echo ( ! empty( $referrer ) ) ? esc_url( $referrer ) : __( 'N/A', 'zdt-mcd' );
+				break;
+
+			case 'violated-directive' :
+				$v_directive = get_post_meta( $post_id , 'violated-directive' , true );
+				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
+				break;
+		}
 	}
 
 	/**
