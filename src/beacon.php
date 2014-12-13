@@ -119,6 +119,7 @@ class MCD_Beacon {
 		$columns['document-uri']       = __( 'Document URI', 'zdt-mdc' );
 		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
 		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
+		$columns['original-policy']    = __( 'Original Policy', 'zdt-mdc' );
 
 		return $columns;
 	}
@@ -149,6 +150,11 @@ class MCD_Beacon {
 
 			case 'violated-directive' :
 				$v_directive = get_post_meta( $post_id , 'violated-directive' , true );
+				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
+				break;
+
+			case 'original-policy' :
+				$v_directive = get_post_meta( $post_id , 'original-policy' , true );
 				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
 				break;
 		}
