@@ -3,7 +3,7 @@ Contributors: tollmanz
 Tags: https, tls, ssl
 Requires at least: 4.0.1
 Tested up to: trunk
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,10 +37,16 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 1.0.1 =
+* Limit logging to work only for admins
+
 = 1.0.0 =
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Limit logging to work only for admins
 
 = 1.0.0 =
 Initial release
