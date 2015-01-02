@@ -3,7 +3,7 @@
  * Plugin Name:    HTTPS Mixed Content Detector
  * Plugin URI:     https://github.com/tollmanz/wordpress-https-mixed-content-detector
  * Description:    A tool for proactively detecting mixed content issues in TLS enabled WordPress websites.
- * Version:        1.0.1
+ * Version:        1.0.2
  * Author:         Zack Tollman
  * Author URI:     https://www.tollmanz.com
  * License:        GPLv2 or later
