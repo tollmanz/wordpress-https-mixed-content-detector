@@ -170,8 +170,8 @@ class MCD_Beacon {
 	 * @return void
 	 */
 	public function handle_report_uri() {
-		// Only works for a logged in user
-		if ( ! is_user_logged_in() ) {
+		// If you can turn on the plugin, the beacon should work for you
+		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
 		}
 
