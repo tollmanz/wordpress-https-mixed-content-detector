@@ -82,22 +82,37 @@ class MCD_Policy {
 	 * Create the policy from the individual policies.
 	 *
 	 * @since  1.0.0.
+	 * @since  1.1.0     Added support for the $mcd_policies array, while still respecting MCD_POLICY.
 	 *
 	 * @return string    The full policy
 	 */
 	public function get_full_policy() {
-		return MCD_POLICY;
+		// Respect the global array of policies in version 1.1.x+
+		if ( isset( $mcd_policies ) ) {
+			$policy = $this->build_policy( $mcd_policies );
+
+			// Respect the MCD_POLICY constant used in version 1.0.x
+		} elseif ( defined( 'MCD_POLICY' ) ) {
+			$policy = MCD_POLICY;
+
+		// Default to the core list of policies
+		} else {
+			$policy = $this->build_policy( $this->get_default_policies() );
+		}
+
+		return $policy;
 	}
 
 	/**
 	 * Return an array of policies for CSP.
 	 *
 	 * @since  1.0.0.
+	 * @since  1.1.0    Support a passed array of policies, not just the plugin default policy.
 	 *
 	 * @return array    Array of CSP policies.
 	 */
-	public function get_policies() {
-		return explode( '; ', MCD_POLICY );
+	public function build_policy( $policies ) {
+		return implode( '; ', $this->build_full_individual_policies( $policies ) );
 	}
 
 	/**
@@ -109,6 +124,60 @@ class MCD_Policy {
 	 */
 	public function get_report_url() {
 		return MCD_REPORT_URI;
+	}
+
+	/**
+	 * Based on the array of individual policies, create an array of full individual policies.
+	 *
+	 * Given the following array:
+	 *
+	 *   array(
+	 *     'font-src'   => "https: data:",
+	 *     'object-src' => "https:",
+	 *   )
+	 *
+	 * The following array is returned:
+	 *
+	 *   array(
+	 *     'font-src https: data:',
+	 *     'object-src https:',
+	 *   )
+	 *
+	 * @since  1.1.0.
+	 *
+	 * @param  array    $array    The list of policies with directive as key and policy as value.
+	 * @return array              The list of policies with the full policy as value.
+	 */
+	public function build_full_individual_policies( $array ) {
+		$full_individual_policies = array();
+
+		foreach ( $array as $directive => $policy ) {
+			$full_individual_policies[] = $directive . ' ' . $policy;
+		}
+
+		return $full_individual_policies;
+	}
+
+	/**
+	 * Get the list of default policies.
+	 *
+	 * @since  1.1.0.
+	 *
+	 * @return array    List of individual policies.
+	 */
+	public function get_default_policies() {
+		return array(
+			'default-src' => "https: data: 'unsafe-inline' 'unsafe-eval'",
+			'child-src'   => "https:",
+			'connect-src' => "https:",
+			'font-src'    => "https: data:",
+			'img-src'     => "https: data:",
+			'media-src'   => "https:",
+			'object-src'  => "https:",
+			'script-src'  => "https: 'unsafe-inline' 'unsafe-eval'",
+			'style-src'   => "https: 'unsafe-inline'",
+			'report-uri'  => MCD_REPORT_URI
+		);
 	}
 }
 endif;
