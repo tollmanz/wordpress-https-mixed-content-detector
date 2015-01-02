@@ -171,7 +171,7 @@ class MCD_Beacon {
 	 */
 	public function handle_report_uri() {
 		// Only works for a logged in user
-		if ( ! is_user_logged_in() ) {
+		if ( ! current_user_can( 'activate_plugins' ) ) {
 			return;
 		}
 
