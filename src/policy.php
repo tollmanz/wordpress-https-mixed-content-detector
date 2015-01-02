@@ -129,7 +129,7 @@ class MCD_Policy {
 	 * @return array    Array of CSP policies.
 	 */
 	public function build_policy( $policies ) {
-		return implode( '; ', $this->build_full_individual_policies( $policies ) );
+		return implode( '; ', $this->build_full_individual_policies( $policies ) ) . '; report-uri ' . $this->get_report_url();
 	}
 
 	/**
@@ -193,7 +193,6 @@ class MCD_Policy {
 			'object-src'  => "https:",
 			'script-src'  => "https: 'unsafe-inline' 'unsafe-eval'",
 			'style-src'   => "https: 'unsafe-inline'",
-			'report-uri'  => MCD_REPORT_URI
 		);
 	}
 }
