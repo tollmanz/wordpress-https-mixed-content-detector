@@ -12,7 +12,7 @@ define( 'MCD_REPORT_URI', site_url( '/?mcd=report&nonce=' . wp_create_nonce( 'mc
  * @since 1.0.0.
  */
 if ( ! defined( 'MCD_POLICY' ) ) {
-	define( 'MCD_POLICY', 'default-src https:; report-uri ' . MCD_REPORT_URI );
+	define( 'MCD_POLICY', "default-src 'unsafe-inline' 'unsafe-eval' data: https:; report-uri " . MCD_REPORT_URI );
 }
 
 /**
