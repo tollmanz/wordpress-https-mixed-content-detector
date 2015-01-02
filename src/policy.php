@@ -104,6 +104,21 @@ class MCD_Policy {
 	}
 
 	/**
+	 * Get a list of policies set for the page load.
+	 *
+	 * Note that this function is intended to be used for breaking a CSP string into an array. It is primarily used for
+	 * whitelisting policies sent to the beacon.
+	 *
+	 * @since  1.0.0.
+	 * @since  1.1.0    Generate the list from the new default policies.
+	 *
+	 * @return array    A list of full policies.
+	 */
+	public function get_policies() {
+		return explode( '; ', $this->get_full_policy() );
+	}
+
+	/**
 	 * Return an array of policies for CSP.
 	 *
 	 * @since  1.0.0.

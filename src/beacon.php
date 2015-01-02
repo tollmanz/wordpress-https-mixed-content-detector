@@ -308,7 +308,7 @@ class MCD_Beacon {
 	 */
 	public function sanitize_violated_directive( $value ) {
 		// Grab the whitelisted policy values
-		$whitelisted_values = mcd_get_policy()->build_policy();
+		$whitelisted_values = mcd_get_policy()->get_policies();
 
 		if ( in_array( $value, $whitelisted_values ) ) {
 			return $value;
