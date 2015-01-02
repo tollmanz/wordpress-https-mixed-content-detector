@@ -87,6 +87,8 @@ class MCD_Policy {
 	 * @return string    The full policy
 	 */
 	public function get_full_policy() {
+		global $mcd_policies;
+
 		// Respect the global array of policies in version 1.1.x+
 		if ( isset( $mcd_policies ) ) {
 			$policy = $this->build_policy( $mcd_policies );
