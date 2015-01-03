@@ -1,4 +1,5 @@
 <?php
+if ( ! class_exists( 'MCD_Command' ) ) :
 /**
  * Define the "mcd" WP CLI command.
  *
@@ -43,5 +44,6 @@ class MCD_Command extends WP_CLI_Command {
 		$table->display();
 	}
 }
+endif;
 
 WP_CLI::add_command( 'mcd', 'MCD_Command' );
