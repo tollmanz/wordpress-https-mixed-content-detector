@@ -43,6 +43,44 @@ class MCD_Command extends WP_CLI_Command {
 		$table->setRows( $final_data );
 		$table->display();
 	}
+
+	/**
+	 * Remove a single or multiple CSP Reports.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of the CSP Report to resolve.
+	 *
+	 * [--all]
+	 * : Remove all CSP Reports.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Resolve CSP Report with post ID of 35
+	 *     wp mcd resolve 35
+	 *
+	 *     # Remove all CSP Reports
+	 *     wp mcd resolve --all
+	 *
+	 * @since 1.1.0.
+	 *
+	 * @subcommand resolve
+	 *
+	 * @param  array    $args          List of arguments passed to command.
+	 * @param  array    $assoc_args    List of flags passed to command
+	 * @return void
+	 */
+	public function _resolve( $args, $assoc_args ) {
+		$id  = ( ! empty( $args[0] ) ) ? absint( $args[0] ) : 0;
+		$all = ( isset( $assoc_args['all'] ) );
+
+		if ( 0 !== $id ) {
+			mcd_mark_violation_resolved( $id );
+		} elseif ( true === $all ) {
+			mcd_mark_all_violations_resolved();
+		}
+	}
 }
 endif;
 

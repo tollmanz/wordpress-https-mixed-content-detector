@@ -82,3 +82,41 @@ function mcd_get_violation_data( $num = 999 ) {
 	return $data;
 }
 endif;
+
+if ( ! function_exists( 'mcd_mark_all_violations_resolved' ) ) :
+/**
+ * Mark all CSP Reports as resolved.
+ *
+ * "Marking" a report resolved is equivalent to deleting the post from the table.
+ *
+ * @since  1.1.0.
+ *
+ * @return void
+ */
+function mcd_mark_all_violations_resolved() {
+	$violation_data = mcd_get_violation_data();
+
+	foreach ( $violation_data as $post_id => $data ) {
+		mcd_mark_all_violations_resolved( $post_id );
+	}
+
+	// If there appear to be additional violations, remove them
+	if ( 999 === count( $violation_data ) ) {
+		mcd_mark_all_violations_resolved();
+	}
+}
+endif;
+
+if ( ! function_exists( 'mcd_mark_violation_resolved' ) ) :
+/**
+ * Mark a single CSP Report as resolved.
+ *
+ * @since  1.1.0.
+ *
+ * @param  int                   $id    The ID of the report to resolve.
+ * @return array|bool|WP_Post           The result of the resolution.
+ */
+function mcd_mark_violation_resolved( $id ) {
+	return wp_delete_post( $id, true );
+}
+endif;
