@@ -56,15 +56,19 @@ class MCD_Command extends WP_CLI_Command {
 			// Display results
 			$table = new \cli\Table();
 
-			$table->setHeaders( array(
+			// Set up the Headers and Footers
+			$header_footers = array(
 				__( 'ID', 'zdt-mdc' ),
 				__( 'Blocked URI', 'zdt-mdc' ),
 				__( 'Document URI', 'zdt-mdc' ),
 				__( 'Referrer', 'zdt-mdc' ),
 				__( 'Violated Directive', 'zdt-mdc' ),
-				__( 'Status', 'zdt-mdc' ),
-				__( 'HTTPS', 'zdt-mdc' ),
-			) );
+				__( 'R', 'zdt-mdc' ),
+				__( 'S', 'zdt-mdc' ),
+			);
+
+			$table->setHeaders( $header_footers );
+			$table->setFooters( $header_footers );
 
 			$table->setRows( $final_data );
 			$table->display();
