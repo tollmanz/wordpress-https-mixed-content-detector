@@ -121,3 +121,39 @@ function mcd_mark_violation_resolved( $id ) {
 	return update_post_meta( $id, 'resolved', 1 );
 }
 endif;
+
+if ( ! function_exists( 'mcd_remove_all_violations' ) ) :
+/**
+ * Remove all CSP violation reports.
+ *
+ * @since  1.1.0.
+ *
+ * @return int    The number of reports removed.
+ */
+function mcd_remove_all_violations() {
+	$violation_data = mcd_get_violation_data( -1 );
+	$removals       = 0;
+
+	foreach ( $violation_data as $post_id => $data ) {
+		if ( false !== mcd_remove_violation( $post_id ) ) {
+			$removals++;
+		}
+	}
+
+	return $removals;
+}
+endif;
+
+if ( ! function_exists( 'mcd_remove_violation' ) ) :
+/**
+ * Remove a single CSP report.
+ *
+ * @since  1.1.0.
+ *
+ * @param  int                   $id    The ID of the report to remove.
+ * @return array|bool|WP_Post           The result of the removal.
+ */
+function mcd_remove_violation( $id ) {
+	return wp_delete_post( $id, true );
+}
+endif;
