@@ -154,8 +154,8 @@ class MCD_Beacon {
 				break;
 
 			case 'original-policy' :
-				$v_directive = get_post_meta( $post_id , 'original-policy' , true );
-				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
+				$original_policy = get_post_meta( $post_id , 'original-policy' , true );
+				echo ( ! empty( $original_policy ) ) ? esc_html( wp_strip_all_tags( $original_policy ) ) : __( 'N/A', 'zdt-mcd' );
 				break;
 		}
 	}
@@ -226,6 +226,23 @@ class MCD_Beacon {
 			foreach ( $clean_data as $key => $value ) {
 				update_post_meta( $post_id, $key, $value );
 			}
+		}
+
+		// Check if the domain supports HTTPS
+		if ( isset( $clean_data['blocked-uri'] ) ) {
+			$uri = $clean_data['blocked-uri'];
+
+			/**
+			 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
+			 * These are marked as -1 to represent an "unknown" status.
+			 */
+			if ( false !== strpos( $uri, 'http', 0 ) ) {
+				$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
+			} else {
+				$result = -1;
+			}
+
+			update_post_meta( $post_id, 'valid-https-uri', $result );
 		}
 
 		exit();

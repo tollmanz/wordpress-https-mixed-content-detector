@@ -3,7 +3,7 @@ Contributors: tollmanz
 Tags: https, tls, ssl
 Requires at least: 4.0.1
 Tested up to: trunk
-Stable tag: 1.0.2
+Stable tag: 1.1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -37,6 +37,11 @@ This section describes how to install the plugin and get it working.
 
 == Changelog ==
 
+= 1.1.0 =
+* Add check for HTTPS domain when logging violation
+* Add `list`, `resolve`, `remove` and `unresolve` WP CLI commands
+* Update CSP directives to be more specific
+
 = 1.0.2 =
 * Remove false positives from the log
 
@@ -47,6 +52,9 @@ This section describes how to install the plugin and get it working.
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Adds HTTPS domain checking, WP CLI commands and more specific CSP directives
 
 = 1.0.2 =
 Remove false positives from the log
