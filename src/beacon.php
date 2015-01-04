@@ -154,8 +154,8 @@ class MCD_Beacon {
 				break;
 
 			case 'original-policy' :
-				$v_directive = get_post_meta( $post_id , 'original-policy' , true );
-				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
+				$original_policy = get_post_meta( $post_id , 'original-policy' , true );
+				echo ( ! empty( $original_policy ) ) ? esc_html( wp_strip_all_tags( $original_policy ) ) : __( 'N/A', 'zdt-mcd' );
 				break;
 		}
 	}
