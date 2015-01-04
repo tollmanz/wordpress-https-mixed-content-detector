@@ -39,6 +39,7 @@ if ( ! function_exists( 'mcd_get_violation_data' ) ) :
  *     'referrer'           => '',
  *     'violated-directive' => '',
  *     'original-policy'    => '',
+ *     'resolved'           => '',
  *   )
  *
  * @since  1.1.0.
@@ -73,6 +74,7 @@ function mcd_get_violation_data( $num = 999 ) {
 				'referrer'           => $referrer,
 				'violated-directive' => $v_directive,
 				'original-policy'    => $original_policy,
+				'resolved'           => absint( get_post_meta( get_the_ID(), 'resolved', true ) ),
 			);
 		}
 	}

@@ -16,6 +16,10 @@ class MCD_Command extends WP_CLI_Command {
 	 * @return void
 	 */
 	public function _list() {
+		// Set up check and x marks
+		$resolved   = \cli\Colors::colorize( "%G✓%n", true );
+		$unresolved = \cli\Colors::colorize( "%R✖%n", true );
+
 		$data = mcd_get_violation_data();
 
 		// Reformat data for table display
@@ -23,6 +27,10 @@ class MCD_Command extends WP_CLI_Command {
 
 		foreach ( $data as $key => $report ) {
 			foreach ( $report as $subkey => $value ) {
+				if ( 'resolved' === $subkey ) {
+					$value = ( 1 === $value ) ? $resolved : $unresolved;
+				}
+
 				$final_data[ $key ][] = $value;
 			}
 		}
@@ -38,6 +46,7 @@ class MCD_Command extends WP_CLI_Command {
 			__( 'Referrer', 'zdt-mdc' ),
 			__( 'Violated Directive', 'zdt-mdc' ),
 			__( 'Original Policy', 'zdt-mdc' ),
+			__( 'Resolved', 'zdt-mdc' ),
 		) );
 
 		$table->setRows( $final_data );
