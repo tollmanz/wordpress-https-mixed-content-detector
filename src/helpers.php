@@ -92,19 +92,19 @@ if ( ! function_exists( 'mcd_mark_all_violations_resolved' ) ) :
  *
  * @since  1.1.0.
  *
- * @return void
+ * @return int    The number of posts resolved.
  */
 function mcd_mark_all_violations_resolved() {
-	$violation_data = mcd_get_violation_data();
+	$violation_data = mcd_get_violation_data( -1 );
+	$resolutions    = 0;
 
 	foreach ( $violation_data as $post_id => $data ) {
-		mcd_mark_violation_resolved( $post_id );
+		if ( false !== mcd_mark_violation_resolved( $post_id ) ) {
+			$resolutions++;
+		}
 	}
 
-	// If there appear to be additional violations, remove them
-	if ( 999 === count( $violation_data ) ) {
-		mcd_mark_all_violations_resolved();
-	}
+	return $resolutions;
 }
 endif;
 

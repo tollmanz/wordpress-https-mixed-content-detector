@@ -85,11 +85,25 @@ class MCD_Command extends WP_CLI_Command {
 		$id  = ( ! empty( $args[0] ) ) ? absint( $args[0] ) : 0;
 		$all = ( isset( $assoc_args['all'] ) );
 
+		$resolutions = 0;
+
 		if ( 0 !== $id ) {
-			mcd_mark_violation_resolved( $id );
+			if ( false !== mcd_mark_violation_resolved( $id ) ) {
+				$resolutions++;
+			}
 		} elseif ( true === $all ) {
-			mcd_mark_all_violations_resolved();
+			$resolutions = mcd_mark_all_violations_resolved();
 		}
+
+		if ( $resolutions === 1 ) {
+			$message = '1 report marked as resolved';
+		} else if ( $resolutions > 1 ) {
+			$message = absint( $resolutions ) . ' reports marked as resolved';
+		} else {
+			$message = 'No reports marked as resolved';
+		}
+
+		WP_CLI::success( $message );
 	}
 }
 endif;
