@@ -122,6 +122,42 @@ function mcd_mark_violation_resolved( $id ) {
 }
 endif;
 
+if ( ! function_exists( 'mcd_mark_all_violations_unresolved' ) ) :
+/**
+ * Mark all CSP Reports as unresolved.
+ *
+ * @since  1.1.0.
+ *
+ * @return int    The number of posts unresolved.
+ */
+function mcd_mark_all_violations_unresolved() {
+	$violation_data        = mcd_get_violation_data( - 1 );
+	$violations_unresolved = 0;
+
+	foreach ( $violation_data as $post_id => $data ) {
+		if ( false !== mcd_mark_violation_unresolved( $post_id ) ) {
+			$violations_unresolved++;
+		}
+	}
+
+	return $violations_unresolved;
+}
+endif;
+
+if ( ! function_exists( 'mcd_mark_violation_unresolved' ) ) :
+/**
+ * Mark a single CSP Report as unresolved.
+ *
+ * @since  1.1.0.
+ *
+ * @param  int                   $id    The ID of the report to unresolve.
+ * @return array|bool|WP_Post           The result of the action.
+ */
+function mcd_mark_violation_unresolved( $id ) {
+	return delete_post_meta( $id, 'resolved' );
+}
+endif;
+
 if ( ! function_exists( 'mcd_remove_all_violations' ) ) :
 /**
  * Remove all CSP violation reports.

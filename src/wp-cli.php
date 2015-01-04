@@ -122,6 +122,64 @@ class MCD_Command extends WP_CLI_Command {
 	}
 
 	/**
+	 * Unresolve a single or multiple CSP Reports.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of the CSP Report to unresolve.
+	 *
+	 * [--all]
+	 * : Unresolve all CSP Reports.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Unresolve CSP Report with post ID of 35
+	 *     wp mcd unresolve 35
+	 *
+	 *     # Unresolve all CSP Reports
+	 *     wp mcd unresolve --all
+	 *
+	 * @since 1.1.0.
+	 *
+	 * @subcommand unresolve
+	 *
+	 * @param  array    $args          List of arguments passed to command.
+	 * @param  array    $assoc_args    List of flags passed to command
+	 * @return void
+	 */
+	public function _unresolve( $args, $assoc_args ) {
+		$id  = ( ! empty( $args[0] ) ) ? absint( $args[0] ) : 0;
+		$all = ( isset( $assoc_args['all'] ) );
+
+		$violations_unresolved = 0;
+
+		if ( 0 !== $id ) {
+			if ( false !== mcd_mark_violation_unresolved( $id ) ) {
+				$violations_unresolved++;
+			}
+		} elseif ( true === $all ) {
+			$violations_unresolved = mcd_mark_all_violations_unresolved();
+		}
+
+		if ( 0 === $violations_unresolved ) {
+			$message = __( 'No reports marked as unresolved', 'zdt-mcd' );
+		} else {
+			$message = sprintf(
+				_n(
+					'1 report marked as unresolved',
+					'%s reports marked as unresolved',
+					absint( $violations_unresolved ),
+					'zdt-mcd'
+				),
+				absint( $violations_unresolved )
+			);
+		}
+
+		WP_CLI::success( $message );
+	}
+
+	/**
 	 * Remove a single or multiple CSP Reports.
 	 *
 	 * ## OPTIONS
