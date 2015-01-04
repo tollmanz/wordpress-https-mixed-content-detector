@@ -74,7 +74,7 @@ class MCD_Command extends WP_CLI_Command {
 			$table->display();
 
 			// Print the key
-			WP_CLI::line( 'R = Resolved, S = Secure URI Available' );
+			WP_CLI::line( "\n  R = Resolved, S = Secure URI Available\n" );
 		} else {
 			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mdc' ) );
 		}
