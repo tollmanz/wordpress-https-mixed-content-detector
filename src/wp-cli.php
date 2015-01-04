@@ -54,6 +54,7 @@ class MCD_Command extends WP_CLI_Command {
 				__( 'Violated Directive', 'zdt-mdc' ),
 				__( 'Original Policy', 'zdt-mdc' ),
 				__( 'Resolved', 'zdt-mdc' ),
+				__( 'Valid HTTPS URI', 'zdt-mdc' ),
 			) );
 
 			$table->setRows( $final_data );

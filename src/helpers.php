@@ -76,6 +76,7 @@ function mcd_get_violation_data( $num = 999 ) {
 				'violated-directive' => $v_directive,
 				'original-policy'    => $original_policy,
 				'resolved'           => absint( get_post_meta( get_the_ID(), 'resolved', true ) ),
+				'valid-https-uri'    => intval( get_post_meta( get_the_ID(), 'valid-https-uri', true ) ),
 			);
 		}
 	}
@@ -191,5 +192,52 @@ if ( ! function_exists( 'mcd_remove_violation' ) ) :
  */
 function mcd_remove_violation( $id ) {
 	return wp_delete_post( $id, true );
+}
+endif;
+
+if ( ! function_exists( 'mcd_is_valid_uri') ) :
+/**
+ * Determine if a URI can be reached.
+ *
+ * @since  1.1.0.
+ *
+ * @param  string    $uri    The URI to test.
+ * @return bool              True if URI is connectable; false if it is not.
+ */
+function mcd_is_valid_uri( $uri ) {
+	$response = wp_remote_get( $uri, array(
+		/**
+		 * Do a HEAD request for efficiency.
+		 */
+		'method'      => 'HEAD',
+
+		/**
+		 * HEAD requests will not redirect by default. It is important that redirection works in case the
+		 * recorded URI is not the final URI. For instance, if the recorded URI is "google.com" when the actual
+		 * URI is "www.google.com", we need to make sure the resolution works.
+		 */
+		'redirection' => 1,
+	) );
+
+	/**
+	 * If the response is a WP_Error, a TCP connection cannot be made to the URI, suggesting that it is not valid. We
+	 * base the validity of the URL on this result.
+	 */
+	return ( false === is_wp_error( $response ) );
+}
+endif;
+
+if ( ! function_exists( 'mcd_uri_has_secure_version' ) ) :
+/**
+ * Determine if the secure version of the URI is reachable.
+ *
+ * @since  1.1.0.
+ *
+ * @param  string    $uri    The URI to test.
+ * @return bool              True if URI is connectable; false if it is not.
+ */
+function mcd_uri_has_secure_version( $uri ) {
+	$https_uri = set_url_scheme( $uri, 'https' );
+	return mcd_is_valid_uri( $https_uri );
 }
 endif;
