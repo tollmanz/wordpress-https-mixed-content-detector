@@ -92,8 +92,13 @@ class MCD_Mixed_Content_Detector {
 
 		// Include dependent files
 		include $this->root_dir . '/config.php';
+		include $this->root_dir . '/helpers.php';
 		include $this->root_dir . '/beacon.php';
 		include $this->root_dir . '/policy.php';
+
+		if ( defined('WP_CLI') && WP_CLI ) {
+			include $this->root_dir . '/wp-cli.php';
+		}
 	}
 }
 endif;
