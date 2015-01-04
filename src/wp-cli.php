@@ -41,6 +41,7 @@ class MCD_Command extends WP_CLI_Command {
 		$table = new \cli\Table();
 
 		$table->setHeaders( array(
+			__( 'Report ID', 'zdt-mdc' ),
 			__( 'Blocked URI', 'zdt-mdc' ),
 			__( 'Document URI', 'zdt-mdc' ),
 			__( 'Referrer', 'zdt-mdc' ),

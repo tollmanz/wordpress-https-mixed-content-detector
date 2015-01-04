@@ -69,6 +69,7 @@ function mcd_get_violation_data( $num = 999 ) {
 			$original_policy = ( ! empty( $original_policy ) ) ? $original_policy : __( 'N/A', 'zdt-mcd' );
 
 			$data[ get_the_ID() ] = array(
+				'id'                 => get_the_ID(),
 				'blocked-uri'        => get_the_title(),
 				'document-uri'       => get_post_meta( get_the_ID(), 'document-uri', true ),
 				'referrer'           => $referrer,
