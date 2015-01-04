@@ -54,7 +54,7 @@ class MCD_Command extends WP_CLI_Command {
 			$table->setRows( $final_data );
 			$table->display();
 		} else {
-			WP_CLI::warning( 'There are no CSP violations logged.' );
+			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mdc' ) );
 		}
 	}
 
@@ -99,12 +99,18 @@ class MCD_Command extends WP_CLI_Command {
 			$resolutions = mcd_mark_all_violations_resolved();
 		}
 
-		if ( $resolutions === 1 ) {
-			$message = '1 report marked as resolved';
-		} else if ( $resolutions > 1 ) {
-			$message = absint( $resolutions ) . ' reports marked as resolved';
+		if ( 0 === $resolutions ) {
+			$message = __( 'No reports marked as resolved', 'zdt-mcd' );
 		} else {
-			$message = 'No reports marked as resolved';
+			$message = sprintf(
+				_n(
+					'1 report marked as resolved',
+					'%s reports marked as resolved',
+					absint( $resolutions ),
+					'zdt-mcd'
+				),
+				absint( $resolutions )
+			);
 		}
 
 		WP_CLI::success( $message );
@@ -151,12 +157,18 @@ class MCD_Command extends WP_CLI_Command {
 			$removals = mcd_remove_all_violations();
 		}
 
-		if ( $removals === 1 ) {
-			$message = '1 report removed';
-		} else if ( $removals > 1 ) {
-			$message = absint( $removals ) . ' reports removed';
+		if ( 0 === $removals ) {
+			$message = __( 'No reports removed', 'zdt-mcd' );
 		} else {
-			$message = 'No reports removed';
+			$message = sprintf(
+				_n(
+					'1 report removed',
+					'%s reports removed',
+					absint( $removals ),
+					'zdt-mcd'
+				),
+				absint( $removals )
+			);
 		}
 
 		WP_CLI::success( $message );
