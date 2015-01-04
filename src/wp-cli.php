@@ -34,6 +34,14 @@ class MCD_Command extends WP_CLI_Command {
 			foreach ( $report as $subkey => $value ) {
 				if ( 'resolved' === $subkey ) {
 					$value = ( 1 === $value ) ? $resolved : $unresolved;
+				} else if ( 'valid-https-uri' === $subkey ) {
+					if ( 1 === $value ) {
+						$value = $resolved;
+					} elseif ( 0 === $value ) {
+						$value = $unresolved;
+					} else {
+						$value = __( 'N/A', 'zdt-mdc' );
+					}
 				}
 
 				$final_data[ $key ][] = $value;
@@ -54,6 +62,7 @@ class MCD_Command extends WP_CLI_Command {
 				__( 'Violated Directive', 'zdt-mdc' ),
 				__( 'Original Policy', 'zdt-mdc' ),
 				__( 'Resolved', 'zdt-mdc' ),
+				__( 'Valid HTTPS URI', 'zdt-mdc' ),
 			) );
 
 			$table->setRows( $final_data );

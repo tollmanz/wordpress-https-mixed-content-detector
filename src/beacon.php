@@ -228,6 +228,23 @@ class MCD_Beacon {
 			}
 		}
 
+		// Check if the domain supports HTTPS
+		if ( isset( $clean_data['blocked-uri'] ) ) {
+			$uri = $clean_data['blocked-uri'];
+
+			/**
+			 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
+			 * These are marked as -1 to represent an "unknown" status.
+			 */
+			if ( false !== strpos( $uri, 'http', 0 ) ) {
+				$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
+			} else {
+				$result = -1;
+			}
+
+			update_post_meta( $post_id, 'valid-https-uri', $result );
+		}
+
 		exit();
 	}
 
