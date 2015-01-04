@@ -37,21 +37,25 @@ class MCD_Command extends WP_CLI_Command {
 
 		wp_reset_postdata();
 
-		// Display results
-		$table = new \cli\Table();
+		if ( count( $data ) > 0 ) {
+			// Display results
+			$table = new \cli\Table();
 
-		$table->setHeaders( array(
-			__( 'Report ID', 'zdt-mdc' ),
-			__( 'Blocked URI', 'zdt-mdc' ),
-			__( 'Document URI', 'zdt-mdc' ),
-			__( 'Referrer', 'zdt-mdc' ),
-			__( 'Violated Directive', 'zdt-mdc' ),
-			__( 'Original Policy', 'zdt-mdc' ),
-			__( 'Resolved', 'zdt-mdc' ),
-		) );
+			$table->setHeaders( array(
+				__( 'Report ID', 'zdt-mdc' ),
+				__( 'Blocked URI', 'zdt-mdc' ),
+				__( 'Document URI', 'zdt-mdc' ),
+				__( 'Referrer', 'zdt-mdc' ),
+				__( 'Violated Directive', 'zdt-mdc' ),
+				__( 'Original Policy', 'zdt-mdc' ),
+				__( 'Resolved', 'zdt-mdc' ),
+			) );
 
-		$table->setRows( $final_data );
-		$table->display();
+			$table->setRows( $final_data );
+			$table->display();
+		} else {
+			WP_CLI::warning( 'There are no CSP violations logged.' );
+		}
 	}
 
 	/**
