@@ -32,19 +32,21 @@ class MCD_Command extends WP_CLI_Command {
 
 		foreach ( $data as $key => $report ) {
 			foreach ( $report as $subkey => $value ) {
-				if ( 'resolved' === $subkey ) {
-					$value = ( 1 === $value ) ? $resolved : $unresolved;
-				} else if ( 'valid-https-uri' === $subkey ) {
-					if ( 1 === $value ) {
-						$value = $resolved;
-					} elseif ( 0 === $value ) {
-						$value = $unresolved;
-					} else {
-						$value = __( 'N/A', 'zdt-mdc' );
+				if ( 'original-policy' !== $subkey ) {
+					if ( 'resolved' === $subkey ) {
+						$value = ( 1 === $value ) ? $resolved : $unresolved;
+					} else if ( 'valid-https-uri' === $subkey ) {
+						if ( 1 === $value ) {
+							$value = $resolved;
+						} elseif ( 0 === $value ) {
+							$value = $unresolved;
+						} else {
+							$value = __( 'N/A', 'zdt-mdc' );
+						}
 					}
-				}
 
-				$final_data[ $key ][] = $value;
+					$final_data[ $key ][] = $value;
+				}
 			}
 		}
 
@@ -55,14 +57,13 @@ class MCD_Command extends WP_CLI_Command {
 			$table = new \cli\Table();
 
 			$table->setHeaders( array(
-				__( 'Report ID', 'zdt-mdc' ),
+				__( 'ID', 'zdt-mdc' ),
 				__( 'Blocked URI', 'zdt-mdc' ),
 				__( 'Document URI', 'zdt-mdc' ),
 				__( 'Referrer', 'zdt-mdc' ),
 				__( 'Violated Directive', 'zdt-mdc' ),
-				__( 'Original Policy', 'zdt-mdc' ),
-				__( 'Resolved', 'zdt-mdc' ),
-				__( 'Valid HTTPS URI', 'zdt-mdc' ),
+				__( 'Status', 'zdt-mdc' ),
+				__( 'HTTPS', 'zdt-mdc' ),
 			) );
 
 			$table->setRows( $final_data );
