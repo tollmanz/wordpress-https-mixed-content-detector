@@ -41,7 +41,7 @@ class MCD_Command extends WP_CLI_Command {
 						} elseif ( 0 === $value ) {
 							$value = $unresolved;
 						} else {
-							$value = __( 'N/A', 'zdt-mdc' );
+							$value = __( '-', 'zdt-mdc' );
 						}
 					}
 
@@ -68,6 +68,9 @@ class MCD_Command extends WP_CLI_Command {
 
 			$table->setRows( $final_data );
 			$table->display();
+
+			// Print the key
+			WP_CLI::line( 'R = Resolved, S = Secure URI Available' );
 		} else {
 			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mdc' ) );
 		}
