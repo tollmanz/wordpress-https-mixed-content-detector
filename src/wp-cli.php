@@ -7,7 +7,12 @@ if ( ! class_exists( 'MCD_Command' ) ) :
  */
 class MCD_Command extends WP_CLI_Command {
 	/**
-	 * List the violations.
+	 * List the all of the violations logged.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Show all violations
+	 *     wp mcd list
 	 *
 	 * @since  1.1.0.
 	 *
