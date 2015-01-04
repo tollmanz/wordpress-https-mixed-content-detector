@@ -90,8 +90,6 @@ if ( ! function_exists( 'mcd_mark_all_violations_resolved' ) ) :
 /**
  * Mark all CSP Reports as resolved.
  *
- * "Marking" a report resolved is equivalent to deleting the post from the table.
- *
  * @since  1.1.0.
  *
  * @return void
