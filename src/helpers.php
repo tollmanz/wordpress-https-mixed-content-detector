@@ -117,6 +117,6 @@ if ( ! function_exists( 'mcd_mark_violation_resolved' ) ) :
  * @return array|bool|WP_Post           The result of the resolution.
  */
 function mcd_mark_violation_resolved( $id ) {
-	return wp_delete_post( $id, true );
+	return update_post_meta( $id, 'resolved', 1 );
 }
 endif;
