@@ -97,7 +97,7 @@ function mcd_mark_all_violations_resolved() {
 	$violation_data = mcd_get_violation_data();
 
 	foreach ( $violation_data as $post_id => $data ) {
-		mcd_mark_all_violations_resolved( $post_id );
+		mcd_mark_violation_resolved( $post_id );
 	}
 
 	// If there appear to be additional violations, remove them
