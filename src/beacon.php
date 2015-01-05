@@ -121,6 +121,8 @@ class MCD_Beacon {
 		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
 		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
 		$columns['report-date']        = __( 'Date', 'zdt-mdc' );
+		$columns['resolve-status']     = __( 'Resolved', 'zdt-mdc' );
+		$columns['secure-status']      = __( 'Secure URI', 'zdt-mdc' );
 
 		return $columns;
 	}
@@ -156,6 +158,24 @@ class MCD_Beacon {
 
 			case 'report-date' :
 				echo human_time_diff( get_the_date( 'U', get_the_ID() ) );
+				break;
+
+			case 'resolve-status':
+				echo ( 1 === (int) get_post_meta( get_the_ID(), 'resolved', true ) ) ? __( 'Yes', 'zdt-mcd' ) : __( 'No', 'zdt-mcd' );
+				break;
+
+			case 'secure-status':
+				$status = (int) get_post_meta( get_the_ID(), 'valid-https-uri', true );
+
+				if ( 1 === $status ) {
+					$message = __( 'Yes', 'zdt-mcd' );
+				} elseif ( 0 === $status ) {
+					$message = __( 'No', 'zdt-mcd' );
+				} else {
+					$message = __( 'N/A', 'zdt-mcd' );
+				}
+
+				echo $message;
 				break;
 		}
 	}
