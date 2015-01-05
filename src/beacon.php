@@ -114,12 +114,15 @@ class MCD_Beacon {
 	 */
 	public function manage_edit_csp_report_columns( $columns ) {
 		unset( $columns['title'] );
+		unset( $columns['date'] );
 
 		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mdc' );
 		$columns['document-uri']       = __( 'Document URI', 'zdt-mdc' );
 		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
 		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
-		$columns['original-policy']    = __( 'Original Policy', 'zdt-mdc' );
+		$columns['report-date']        = __( 'Date', 'zdt-mdc' );
+		$columns['resolve-status']     = __( 'Resolved', 'zdt-mdc' );
+		$columns['secure-status']      = __( 'Secure URI', 'zdt-mdc' );
 
 		return $columns;
 	}
@@ -153,9 +156,26 @@ class MCD_Beacon {
 				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
 				break;
 
-			case 'original-policy' :
-				$original_policy = get_post_meta( $post_id , 'original-policy' , true );
-				echo ( ! empty( $original_policy ) ) ? esc_html( wp_strip_all_tags( $original_policy ) ) : __( 'N/A', 'zdt-mcd' );
+			case 'report-date' :
+				echo human_time_diff( get_the_date( 'U', get_the_ID() ) );
+				break;
+
+			case 'resolve-status':
+				echo ( 1 === (int) get_post_meta( get_the_ID(), 'resolved', true ) ) ? __( 'Yes', 'zdt-mcd' ) : __( 'No', 'zdt-mcd' );
+				break;
+
+			case 'secure-status':
+				$status = (int) get_post_meta( get_the_ID(), 'valid-https-uri', true );
+
+				if ( 1 === $status ) {
+					$message = __( 'Yes', 'zdt-mcd' );
+				} elseif ( 0 === $status ) {
+					$message = __( 'No', 'zdt-mcd' );
+				} else {
+					$message = __( 'Unknown', 'zdt-mcd' );
+				}
+
+				echo $message;
 				break;
 		}
 	}
