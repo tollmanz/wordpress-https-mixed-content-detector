@@ -41,7 +41,7 @@ class MCD_Command extends WP_CLI_Command {
 						} elseif ( 0 === $value ) {
 							$value = $unresolved;
 						} else {
-							$value = __( '-', 'zdt-mdc' );
+							$value = __( '-', 'zdt-mcd' );
 						}
 					}
 
@@ -58,13 +58,13 @@ class MCD_Command extends WP_CLI_Command {
 
 			// Set up the Headers and Footers
 			$header_footers = array(
-				__( 'ID', 'zdt-mdc' ),
-				__( 'Blocked URI', 'zdt-mdc' ),
-				__( 'Document URI', 'zdt-mdc' ),
-				__( 'Referrer', 'zdt-mdc' ),
-				__( 'Violated Directive', 'zdt-mdc' ),
-				__( 'R', 'zdt-mdc' ),
-				__( 'S', 'zdt-mdc' ),
+				__( 'ID', 'zdt-mcd' ),
+				__( 'Blocked URI', 'zdt-mcd' ),
+				__( 'Document URI', 'zdt-mcd' ),
+				__( 'Referrer', 'zdt-mcd' ),
+				__( 'Violated Directive', 'zdt-mcd' ),
+				__( 'R', 'zdt-mcd' ),
+				__( 'S', 'zdt-mcd' ),
 			);
 
 			$table->setHeaders( $header_footers );
@@ -76,7 +76,7 @@ class MCD_Command extends WP_CLI_Command {
 			// Print the key
 			WP_CLI::line( "\n  R = Resolved, S = Secure URI Available\n" );
 		} else {
-			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mdc' ) );
+			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mcd' ) );
 		}
 	}
 

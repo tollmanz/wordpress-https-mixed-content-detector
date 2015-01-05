@@ -116,13 +116,13 @@ class MCD_Beacon {
 		unset( $columns['title'] );
 		unset( $columns['date'] );
 
-		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mdc' );
-		$columns['document-uri']       = __( 'Document URI', 'zdt-mdc' );
-		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
-		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
-		$columns['report-date']        = __( 'Date', 'zdt-mdc' );
-		$columns['resolve-status']     = __( 'Resolved', 'zdt-mdc' );
-		$columns['secure-status']      = __( 'Secure URI', 'zdt-mdc' );
+		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mcd' );
+		$columns['document-uri']       = __( 'Document URI', 'zdt-mcd' );
+		$columns['referrer']           = __( 'Referrer', 'zdt-mcd' );
+		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mcd' );
+		$columns['report-date']        = __( 'Date', 'zdt-mcd' );
+		$columns['resolve-status']     = __( 'Resolved', 'zdt-mcd' );
+		$columns['secure-status']      = __( 'Secure URI', 'zdt-mcd' );
 
 		return $columns;
 	}
