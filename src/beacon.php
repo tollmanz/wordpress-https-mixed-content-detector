@@ -71,7 +71,7 @@ class MCD_Beacon {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => false,
 			'menu_position'       => 25,
-			'menu_icon'           => null,
+			'menu_icon'           => 'dashicons-flag',
 			'can_export'          => false,
 			'delete_with_user'    => false,
 			'hierarchical'        => false,
