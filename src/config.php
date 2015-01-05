@@ -23,3 +23,24 @@ if ( ! defined( 'MCD_MONITOR_ADMIN' ) ) {
 if ( ! defined( 'MCD_MONITOR_FRONT_END' ) ) {
 	define( 'MCD_MONITOR_FRONT_END', true );
 }
+
+/**
+ * Sample mode will accept reports from non-logged in users.
+ *
+ * @since 1.2.0.
+ */
+if ( ! defined( 'MCD_SAMPLE_MODE' ) ) {
+	define( 'MCD_SAMPLE_MODE', false );
+}
+
+/**
+ * The percentage of traffic to sample.
+ *
+ * The value set here will be divided by 100 to get the amount of traffic to sample. Setting this to 1 will sample ~1 in
+ * every 100 requests.
+ *
+ * @since 1.2.0.
+ */
+if ( ! defined( 'MCD_SAMPLE_FREQUENCY' ) ) {
+	define( 'MCD_SAMPLE_FREQUENCY', 10 );
+}
