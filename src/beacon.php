@@ -176,7 +176,7 @@ class MCD_Beacon {
 		}
 
 		// Authenticate the request for either sampling mode or auth mode
-		if ( true === MCD_SAMPLE_MODE ) {
+		if ( true === MCD_SAMPLE_MODE && ! is_user_logged_in() ) {
 			/**
 			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
 			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
