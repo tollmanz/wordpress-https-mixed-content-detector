@@ -172,7 +172,7 @@ class MCD_Beacon {
 				} elseif ( 0 === $status ) {
 					$message = __( 'No', 'zdt-mcd' );
 				} else {
-					$message = __( 'N/A', 'zdt-mcd' );
+					$message = __( 'Unknown', 'zdt-mcd' );
 				}
 
 				echo $message;
