@@ -114,11 +114,13 @@ class MCD_Beacon {
 	 */
 	public function manage_edit_csp_report_columns( $columns ) {
 		unset( $columns['title'] );
+		unset( $columns['date'] );
 
 		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mdc' );
 		$columns['document-uri']       = __( 'Document URI', 'zdt-mdc' );
 		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
 		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
+		$columns['report-date']        = __( 'Date', 'zdt-mdc' );
 
 		return $columns;
 	}
@@ -150,6 +152,10 @@ class MCD_Beacon {
 			case 'violated-directive' :
 				$v_directive = get_post_meta( $post_id , 'violated-directive' , true );
 				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
+				break;
+
+			case 'report-date' :
+				echo human_time_diff( get_the_date( 'U', get_the_ID() ) );
 				break;
 		}
 	}
