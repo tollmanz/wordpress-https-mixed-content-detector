@@ -1,6 +1,6 @@
 <?php
 
-class MCD_Violation_Location_Raw_Content implements MCD_Violation_Location {
+class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Base {
 	public function get_location_id() {
 		return 'mcd-raw-content';
 	}

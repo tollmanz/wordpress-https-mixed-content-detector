@@ -108,6 +108,7 @@ class MCD_Mixed_Content_Detector {
 		// Load the Violation Location files
 		include $this->root_dir . '/violation-locations/violation-location-collection.php';
 		include $this->root_dir . '/violation-locations/violation-location-interface.php';
+		include $this->root_dir . '/violation-locations/violation-location-base.php';
 
 		// Create the collector
 		$this->violation_location_collector = new MCD_Violation_Location_Collection();
