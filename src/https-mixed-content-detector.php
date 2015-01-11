@@ -54,6 +54,15 @@ class MCD_Mixed_Content_Detector {
 	var $url_base = '';
 
 	/**
+	 * The one Violation_Location_Collection object.
+	 *
+	 * @since 1.2.0.
+	 *
+	 * @var   MCD_Violation_Location_Collection    Holds the violation location collector object.
+	 */
+	var $violation_location_collector;
+
+	/**
 	 * The one instance of MCD_Mixed_Content_Detector.
 	 *
 	 * @since 1.0.0.
@@ -95,6 +104,18 @@ class MCD_Mixed_Content_Detector {
 		include $this->root_dir . '/helpers.php';
 		include $this->root_dir . '/beacon.php';
 		include $this->root_dir . '/policy.php';
+
+		// Load the Violation Location files
+		include $this->root_dir . '/violation-locations/violation-location-collection.php';
+		include $this->root_dir . '/violation-locations/violation-location-interface.php';
+
+		// Create the collector
+		$this->violation_location_collector = new MCD_Violation_Location_Collection();
+
+		// Load in the violation location objects
+		include $this->root_dir . '/violation-locations/raw-content.php';
+
+		$this->violation_location_collector->add( new MCD_Violation_Location_Raw_Content() );
 
 		if ( defined('WP_CLI') && WP_CLI ) {
 			include $this->root_dir . '/wp-cli.php';
