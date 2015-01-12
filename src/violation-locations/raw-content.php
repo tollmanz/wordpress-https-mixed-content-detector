@@ -30,8 +30,10 @@ class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Base {
 
 			// Search for each variant. If any one variant matches, return true.
 			foreach ( $uri_variants as $variant ) {
-				if ( false !== strpos( $content, $variant ) ) {
-					return true;
+				if ( ! empty( $variant ) ) {
+					if ( false !== strpos( $content, $variant ) ) {
+						return true;
+					}
 				}
 			}
 		}
