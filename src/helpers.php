@@ -73,7 +73,7 @@ function mcd_get_violation_data( $num = 999 ) {
 
 			$data[ get_the_ID() ] = array(
 				'id'                 => get_the_ID(),
-				'blocked-uri'        => get_the_title(),
+				'blocked-uri'        => get_post_meta( get_the_ID(), 'blocked-uri', true ),
 				'document-uri'       => get_post_meta( get_the_ID(), 'document-uri', true ),
 				'referrer'           => $referrer,
 				'violated-directive' => $v_directive,
