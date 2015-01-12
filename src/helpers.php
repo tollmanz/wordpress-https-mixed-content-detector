@@ -7,20 +7,26 @@ if ( ! function_exists( 'mcd_get_violation_wp_query' ) ) :
  * @since  1.1.0.
  *
  * @param  int         $num    The number of violations to query.
+ * @param  int         $id     Specific report to lookup.
  * @return WP_Query            The WP_Query containing the violations
  */
-function mcd_get_violation_wp_query( $num = 999 ) {
+function mcd_get_violation_wp_query( $num = 999, $id = 0 ) {
 	// Determine number of violations to display
 	$num = ( ! empty( $num ) ) ? intval( $num ) : 999; // Use intval to allow -1 if desired
 
-	// Query for all violations
-	$violations = new WP_Query( array(
-		'post_type' => 'csp-report',
+	$args = array(
+		'post_type'      => 'csp-report',
 		'posts_per_page' => $num,
-		'no_found_rows' => true,
-	) );
+		'no_found_rows'  => true,
+	);
 
-	return $violations;
+	// If a specific ID is queried, add it to the query
+	if ( 0 !== $id ) {
+		$args['p']              = absint( $id );
+		$args['posts_per_page'] = 1;
+	}
+
+	return new WP_Query( $args );
 }
 endif;
 
@@ -45,14 +51,15 @@ if ( ! function_exists( 'mcd_get_violation_data' ) ) :
  * @since  1.1.0.
  *
  * @param  int      $num    The number of violations to get.
+ * @param  int      $id     Specific report to lookup.
  * @return array            The data for the violations.
  */
-function mcd_get_violation_data( $num = 999 ) {
+function mcd_get_violation_data( $num = 999, $id = 0 ) {
 	// Set a data collector
 	$data = array();
 
 	// Query for the violations
-	$violation_wp_query = mcd_get_violation_wp_query( $num );
+	$violation_wp_query = mcd_get_violation_wp_query( $num, $id );
 
 	// Package up the important data
 	if ( $violation_wp_query->have_posts() ) {
