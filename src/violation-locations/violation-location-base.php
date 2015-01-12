@@ -26,7 +26,7 @@ abstract class MCD_Violation_Location_Base implements MCD_Violation_Location {
 		$variants = array(
 			'http'              => set_url_scheme( $uri, 'http' ),
 			'https'             => set_url_scheme( $uri, 'https' ),
-			'protocol-relative' => str_replace( 'http', '', set_url_scheme( $uri, 'http' ) ),
+			'protocol-relative' => str_replace( 'http:', '', set_url_scheme( $uri, 'http' ) ),
 		);
 
 		// Get just the path without the protocol or host name
