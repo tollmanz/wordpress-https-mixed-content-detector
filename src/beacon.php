@@ -139,7 +139,7 @@ class MCD_Beacon {
 	public function manage_csp_report_posts_custom_column( $column, $post_id ) {
 		switch ( $column ) {
 			case 'blocked-uri' :
-				echo esc_url( get_the_title( $post_id ) );
+				echo esc_url( get_post_meta( $post_id , 'blocked-uri' , true ) );
 				break;
 
 			case 'document-uri' :
