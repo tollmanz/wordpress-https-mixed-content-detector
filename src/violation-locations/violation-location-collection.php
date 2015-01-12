@@ -37,5 +37,16 @@ class MCD_Violation_Location_Collection {
 			return false;
 		}
 	}
+
+	/**
+	 * Return all of the Violation Location objects.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @return array    The list of Violation Location objects.
+	 */
+	public function get_all() {
+		return $this->_items;
+	}
 }
 
