@@ -253,6 +253,64 @@ class MCD_Command extends WP_CLI_Command {
 
 		WP_CLI::success( $message );
 	}
+
+	/**
+	 * Attempt to locate the source of a violation.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of the CSP Report to investigate.
+	 *
+	 * [--all]
+	 * : Locate source of all CSP Reports.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Investigate CSP Report with post ID 35
+	 *     wp mcd locate 35
+	 *
+	 *     # Investigate all CSP Reports
+	 *     wp mcd locate --all
+	 *
+	 * @since 1.2.0.
+	 *
+	 * @subcommand locate
+	 *
+	 * @param  array    $args          List of arguments passed to command.
+	 * @param  array    $assoc_args    List of flags passed to command
+	 * @return void
+	 */
+	public function _locate( $args, $assoc_args ) {
+		$id  = ( ! empty( $args[0] ) ) ? absint( $args[0] ) : 0;
+		$all = ( isset( $assoc_args['all'] ) );
+
+		$locations = 0;
+
+		if ( 0 !== $id ) {
+			if ( false !== mcd_locate_violation( $id ) ) {
+				$locations++;
+			}
+		} elseif ( true === $all ) {
+			$locations = mcd_locate_all_violations();
+		}
+
+		if ( 0 === $locations ) {
+			$message = __( 'No reports located', 'zdt-mcd' );
+		} else {
+			$message = sprintf(
+				_n(
+					'1 blocked URI located',
+					'%s blocked URIs located',
+					absint( $locations ),
+					'zdt-mcd'
+				),
+				absint( $locations )
+			);
+		}
+
+		WP_CLI::success( $message );
+	}
 }
 endif;
 

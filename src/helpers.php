@@ -251,3 +251,58 @@ function mcd_uri_has_secure_version( $uri ) {
 	return mcd_is_valid_uri( $https_uri );
 }
 endif;
+
+if ( ! function_exists( 'mcd_locate_all_violations' ) ) :
+/**
+ * Locate the source of all CSP Reports.
+ *
+ * @since  1.2.0.
+ *
+ * @return int    The number of reports located.
+ */
+function mcd_locate_all_violations() {
+	$violation_data      = mcd_get_violation_data( -1 );
+	$violation_locations = mcd_get_mixed_content_detector()->violation_location_collector->get_all();
+
+	$locations = 0;
+
+	foreach ( $violation_data as $post_id => $data ) {
+		foreach ( $violation_locations as $violation_location ) {
+			if ( true === $violation_location->result( $data ) ) {
+				update_post_meta( $post_id, 'location', $violation_location->get_location_id() );
+				$locations++;
+			}
+		}
+	}
+
+	return $locations;
+}
+endif;
+
+if ( ! function_exists( 'mcd_locate_violation' ) ) :
+/**
+ * Locate the source of an individual CSP Report.
+ *
+ * @since  1.2.0.
+ *
+ * @param  int                   $id    The ID of the report to investigate.
+ * @return array|bool|WP_Post           The result of the investigation.
+ */
+function mcd_locate_violation( $id ) {
+	$violation_data      = mcd_get_violation_data( 1, $id );
+	$violation_locations = mcd_get_mixed_content_detector()->violation_location_collector->get_all();
+
+	$locations = 0;
+
+	foreach ( $violation_data as $post_id => $data ) {
+		foreach ( $violation_locations as $violation_location ) {
+			if ( true === $violation_location->result( $data ) ) {
+				update_post_meta( $post_id, 'location', $violation_location->get_location_id() );
+				$locations++;
+			}
+		}
+	}
+
+	return $locations;
+}
+endif;
