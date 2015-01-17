@@ -75,6 +75,9 @@ function mcd_get_violation_data( $num = 999, $id = 0 ) {
 			$original_policy = get_post_meta( get_the_ID(), 'original-policy', true );
 			$original_policy = ( ! empty( $original_policy ) ) ? $original_policy : __( 'N/A', 'zdt-mcd' );
 
+			$location = get_post_meta( get_the_ID(), 'location', true );
+			$location = ( ! empty( $location ) ) ? $location : __( 'N/A', 'zdt-mcd' );
+
 			$valid_https_uri = get_post_meta( get_the_ID(), 'valid-https-uri', true );
 			$valid_https_uri = ( '0' === $valid_https_uri || '1' === $valid_https_uri ) ? intval( $valid_https_uri ) :  -1;
 
@@ -85,6 +88,7 @@ function mcd_get_violation_data( $num = 999, $id = 0 ) {
 				'referrer'           => $referrer,
 				'violated-directive' => $v_directive,
 				'original-policy'    => $original_policy,
+				'location'           => $location,
 				'resolved'           => absint( get_post_meta( get_the_ID(), 'resolved', true ) ),
 				'valid-https-uri'    => $valid_https_uri,
 			);

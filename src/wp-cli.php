@@ -63,6 +63,7 @@ class MCD_Command extends WP_CLI_Command {
 				__( 'Document URI', 'zdt-mcd' ),
 				__( 'Referrer', 'zdt-mcd' ),
 				__( 'Violated Directive', 'zdt-mcd' ),
+				__( 'Location', 'zdt-mcd' ),
 				__( 'R', 'zdt-mcd' ),
 				__( 'S', 'zdt-mcd' ),
 			);
