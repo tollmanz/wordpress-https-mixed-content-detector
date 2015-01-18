@@ -9,6 +9,10 @@ class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Base {
 		return __( 'Raw Content', 'zdt-mcd' );
 	}
 
+	public function get_location_hint() {
+		return __( 'The violation report originated from raw post content. This content was entered directly in the post\'s content field. It can be corrected by editing the post.', 'zdt-mcd' );
+	}
+
 	/**
 	 * Determine if the blocked URI is present in the content.
 	 *
