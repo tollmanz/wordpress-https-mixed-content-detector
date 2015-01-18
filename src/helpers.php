@@ -275,6 +275,7 @@ function mcd_locate_all_violations() {
 			if ( true === $violation_location->result( $data ) ) {
 				update_post_meta( $post_id, 'location', $violation_location->get_location_id() );
 				$locations++;
+				break;
 			}
 		}
 	}
