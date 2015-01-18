@@ -105,6 +105,23 @@ class MCD_Mixed_Content_Detector {
 		include $this->root_dir . '/beacon.php';
 		include $this->root_dir . '/policy.php';
 
+		// Load in WP CLI
+		if ( defined('WP_CLI') && WP_CLI ) {
+			include $this->root_dir . '/wp-cli.php';
+		}
+
+		// Load up the violation locations
+		$this->setup_violation_locations();
+	}
+
+	/**
+	 * Load all of the violation location information.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @return void
+	 */
+	public function setup_violation_locations() {
 		// Load the Violation Location files
 		include $this->root_dir . '/violation-locations/violation-location-collection.php';
 		include $this->root_dir . '/violation-locations/violation-location-interface.php';
@@ -136,11 +153,6 @@ class MCD_Mixed_Content_Detector {
 		// Add the filtered content after the shortcodes in order for more specificity
 		include $this->root_dir . '/violation-locations/content-filtered.php';
 		$this->violation_location_collector->add( new MCD_Violation_Location_Content_Filtered() );
-
-		// Load in WP CLI
-		if ( defined('WP_CLI') && WP_CLI ) {
-			include $this->root_dir . '/wp-cli.php';
-		}
 	}
 }
 endif;
