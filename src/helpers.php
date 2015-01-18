@@ -265,22 +265,9 @@ if ( ! function_exists( 'mcd_locate_all_violations' ) ) :
  * @return int    The number of reports located.
  */
 function mcd_locate_all_violations() {
-	$violation_data      = mcd_get_violation_data( -1 );
-	$violation_locations = mcd_get_mixed_content_detector()->violation_location_collector->get_all();
+	$violation_data = mcd_get_violation_data( -1 );
+	return mcd_handle_violation_locations( $violation_data );
 
-	$locations = 0;
-
-	foreach ( $violation_data as $post_id => $data ) {
-		foreach ( $violation_locations as $violation_location ) {
-			if ( true === $violation_location->result( $data ) ) {
-				update_post_meta( $post_id, 'location', $violation_location->get_location_id() );
-				$locations++;
-				break;
-			}
-		}
-	}
-
-	return $locations;
 }
 endif;
 
@@ -294,16 +281,30 @@ if ( ! function_exists( 'mcd_locate_violation' ) ) :
  * @return array|bool|WP_Post           The result of the investigation.
  */
 function mcd_locate_violation( $id ) {
-	$violation_data      = mcd_get_violation_data( 1, $id );
-	$violation_locations = mcd_get_mixed_content_detector()->violation_location_collector->get_all();
+	$violation_data = mcd_get_violation_data( 1, $id );
+	return mcd_handle_violation_locations( $violation_data );
+}
+endif;
 
-	$locations = 0;
+if ( ! function_exists( 'mcd_handle_violation_locations' ) ) :
+/**
+ * Handle the recording of 1 or more violation locations.
+ *
+ * @since  1.2.0.
+ *
+ * @param  WP_Query              $violation_data    A list of violation locations.
+ * @return array|bool|WP_Post                       The result of the investigation.
+ */
+function mcd_handle_violation_locations( $violation_data ) {
+	$violation_locations = mcd_get_mixed_content_detector()->violation_location_collector->get_all();
+	$locations           = 0;
 
 	foreach ( $violation_data as $post_id => $data ) {
 		foreach ( $violation_locations as $violation_location ) {
 			if ( true === $violation_location->result( $data ) ) {
 				update_post_meta( $post_id, 'location', $violation_location->get_location_id() );
 				$locations++;
+				break;
 			}
 		}
 	}
