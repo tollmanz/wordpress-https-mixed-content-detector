@@ -129,6 +129,10 @@ class MCD_Mixed_Content_Detector {
 			$this->violation_location_collector->add( new MCD_Violation_Location_Shortcode_Content( $shortcode ) );
 		}
 
+		// Setup the autoembed location
+		include $this->root_dir . '/violation-locations/autoembed-content.php';
+		$this->violation_location_collector->add( new MCD_Violation_Location_Autoembed_Content() );
+
 		// Add the filtered content after the shortcodes in order for more specificity
 		include $this->root_dir . '/violation-locations/filtered-content.php';
 		$this->violation_location_collector->add( new MCD_Violation_Location_Filtered_Content() );
