@@ -289,9 +289,7 @@ class MCD_Command extends WP_CLI_Command {
 		$locations = 0;
 
 		if ( 0 !== $id ) {
-			if ( false !== mcd_locate_violation( $id ) ) {
-				$locations++;
-			}
+			$locations = mcd_locate_violation( $id );
 		} elseif ( true === $all ) {
 			$locations = mcd_locate_all_violations();
 		}
