@@ -153,6 +153,17 @@ class MCD_Mixed_Content_Detector {
 		// Add the filtered content after the shortcodes in order for more specificity
 		include $this->root_dir . '/violation-locations/content-filtered.php';
 		$this->violation_location_collector->add( new MCD_Violation_Location_Content_Filtered() );
+
+		// Bring in the enqueue checks
+		include $this->root_dir . '/violation-locations/enqueue-base.php';
+
+		// Check for enqueued scripts
+		include $this->root_dir . '/violation-locations/enqueue-script.php';
+		$this->violation_location_collector->add( new MCD_Violation_Location_Enqueue_Script() );
+
+		// Check for enqueued styles
+		include $this->root_dir . '/violation-locations/enqueue-style.php';
+		$this->violation_location_collector->add( new MCD_Violation_Location_Enqueue_Style() );
 	}
 }
 endif;
