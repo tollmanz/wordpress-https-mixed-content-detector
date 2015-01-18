@@ -49,6 +49,19 @@ abstract class MCD_Violation_Location_Content_Base extends MCD_Violation_Locatio
 	}
 
 	/**
+	 * Retrieve the raw post content for a post.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @param  int       $id    The ID of the post.
+	 * @return string           The post content.
+	 */
+	protected function _get_raw_post_content( $id ) {
+		$post = get_post( $id );
+		return ( isset( $post->post_content ) ) ? $post->post_content : '';
+	}
+
+	/**
 	 * Determine if content is searchable for a particular violation.
 	 *
 	 * @since  1.2.0.

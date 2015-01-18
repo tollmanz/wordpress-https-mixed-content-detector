@@ -42,8 +42,7 @@ class MCD_Violation_Location_Autoembed_Content extends MCD_Violation_Location_Co
 	 * @return string           The post content.
 	 */
 	protected function _get_post_content( $id ) {
-		$post    = get_post( $id );
-		$content = ( isset( $post->post_content ) ) ? $post->post_content : '';
+		$content = $this->_get_raw_post_content( $id );
 
 		if ( ! empty( $content ) ) {
 			global $wp_embed;

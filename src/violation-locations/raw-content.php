@@ -42,7 +42,6 @@ class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Content_
 	 * @return string           The post content.
 	 */
 	protected function _get_post_content( $id ) {
-		$post = get_post( $id );
-		return ( isset( $post->post_content ) ) ? $post->post_content : '';
+		return $this->_get_raw_post_content( $id );
 	}
 }

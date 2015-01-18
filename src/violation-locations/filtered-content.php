@@ -43,11 +43,9 @@ class MCD_Violation_Location_Filtered_Content extends MCD_Violation_Location_Con
 	 * @return string           The post content.
 	 */
 	protected function _get_post_content( $id ) {
-		$post    = get_post( $id );
-		$content = '';
+		$content = $this->_get_raw_post_content( $id );
 
-		if ( ! is_null( $post ) && ! empty( $post->post_content ) ) {
-			$content = $post->post_content;
+		if ( ! empty( $content ) ) {
 			$content = apply_filters( 'the_content', $content );
 			$content = str_replace( ']]>', ']]&gt;', $content );
 		}
