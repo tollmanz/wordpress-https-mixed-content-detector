@@ -19,7 +19,7 @@ class MCD_Violation_Location_Collection {
 	 * @return void
 	 */
 	public function add( $item ) {
-		$this->_items[ $item->get_location_name() ] = $item;
+		$this->_items[ $item->get_location_id() ] = $item;
 	}
 
 	/**
