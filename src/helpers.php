@@ -300,13 +300,22 @@ function mcd_handle_violation_locations( $violation_data ) {
 	$locations           = 0;
 
 	foreach ( $violation_data as $post_id => $data ) {
+		$found = false;
+
 		foreach ( $violation_locations as $violation_location ) {
 			if ( true === $violation_location->result( $data ) ) {
-				update_post_meta( $post_id, 'location', $violation_location->get_location_id() );
+				$location = $violation_location->get_location_id();
 				$locations++;
+				$found = true;
 				break;
 			}
 		}
+
+		if ( false === $found ) {
+			$location = __( 'unknown', 'zdt-mcd' );
+		}
+
+		update_post_meta( $post_id, 'location', $location );
 	}
 
 	return $locations;
