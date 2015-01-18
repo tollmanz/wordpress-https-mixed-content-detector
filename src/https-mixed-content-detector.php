@@ -114,6 +114,7 @@ class MCD_Mixed_Content_Detector {
 		$this->violation_location_collector = new MCD_Violation_Location_Collection();
 
 		// Load in the violation location objects
+		include $this->root_dir . '/violation-locations/content-base.php';
 		include $this->root_dir . '/violation-locations/raw-content.php';
 		include $this->root_dir . '/violation-locations/filtered-content.php';
 
