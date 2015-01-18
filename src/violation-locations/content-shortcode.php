@@ -30,7 +30,7 @@ class MCD_Violation_Location_Shortcode_Content extends MCD_Violation_Location_Co
 	 * @return string    The ID for the violation location.
 	 */
 	public function get_location_id() {
-		return 'mcd-shortcode-content-' . sanitize_title_with_dashes( $this->_shortcode );
+		return 'content-shortcode' . sanitize_title_with_dashes( $this->_shortcode );
 	}
 
 	/**
@@ -41,7 +41,7 @@ class MCD_Violation_Location_Shortcode_Content extends MCD_Violation_Location_Co
 	 * @return string    The name for the violation location.
 	 */
 	public function get_location_name() {
-		return __( 'Shortcode Content', 'zdt-mcd' );
+		return __( 'Content Shortcode', 'zdt-mcd' );
 	}
 
 	/**

@@ -9,7 +9,7 @@ class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Content_
 	 * @return string    The ID for the violation location.
 	 */
 	public function get_location_id() {
-		return 'mcd-raw-content';
+		return 'content-raw';
 	}
 
 	/**
@@ -20,7 +20,7 @@ class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Content_
 	 * @return string    The name for the violation location.
 	 */
 	public function get_location_name() {
-		return __( 'Raw Content', 'zdt-mcd' );
+		return __( 'Content Raw', 'zdt-mcd' );
 	}
 
 	/**

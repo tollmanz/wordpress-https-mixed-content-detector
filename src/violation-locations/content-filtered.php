@@ -9,7 +9,7 @@ class MCD_Violation_Location_Filtered_Content extends MCD_Violation_Location_Con
 	 * @return string    The ID for the violation location.
 	 */
 	public function get_location_id() {
-		return 'mcd-filtered-content';
+		return 'content-filtered';
 	}
 
 	/**
@@ -20,7 +20,7 @@ class MCD_Violation_Location_Filtered_Content extends MCD_Violation_Location_Con
 	 * @return string    The name for the violation location.
 	 */
 	public function get_location_name() {
-		return __( 'Filtered Content', 'zdt-mcd' );
+		return __( 'Content Filteres', 'zdt-mcd' );
 	}
 
 	/**

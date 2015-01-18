@@ -9,7 +9,7 @@ class MCD_Violation_Location_Autoembed_Content extends MCD_Violation_Location_Co
 	 * @return string    The ID for the violation location.
 	 */
 	public function get_location_id() {
-		return 'mcd-autoembed-content';
+		return 'content-autoembed';
 	}
 
 	/**
@@ -20,7 +20,7 @@ class MCD_Violation_Location_Autoembed_Content extends MCD_Violation_Location_Co
 	 * @return string    The name for the violation location.
 	 */
 	public function get_location_name() {
-		return __( 'Autoembed Content', 'zdt-mcd' );
+		return __( 'Content Autoembed', 'zdt-mcd' );
 	}
 
 	/**
