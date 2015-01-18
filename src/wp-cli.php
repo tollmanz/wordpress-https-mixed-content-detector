@@ -312,6 +312,39 @@ class MCD_Command extends WP_CLI_Command {
 
 		WP_CLI::success( $message );
 	}
+
+	/**
+	 * Explain the meaning of a specific violation location.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of violation location.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp mcd explain mcd-raw-content
+	 *
+	 * @since 1.2.0.
+	 *
+	 * @subcommand explain
+	 *
+	 * @param  array    $args          List of arguments passed to command.
+	 * @param  array    $assoc_args    List of flags passed to command
+	 * @return void
+	 */
+	public function _explain( $args, $assoc_args ) {
+		$id = ( ! empty( $args[0] ) ) ? sanitize_title_with_dashes( $args[0] ) : '';
+
+		if ( ! empty( $id ) ) {
+			$violation = mcd_get_mixed_content_detector()->violation_location_collector->get_item( $id );
+			$hint      = $violation->get_location_hint();
+
+			if ( ! empty( $hint ) ) {
+				WP_CLI::line( $hint );
+			}
+		}
+	}
 }
 endif;
 
