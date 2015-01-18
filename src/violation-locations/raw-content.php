@@ -1,14 +1,35 @@
 <?php
 
 class MCD_Violation_Location_Raw_Content extends MCD_Violation_Location_Base {
+	/**
+	 * The ID of the violation location.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @return string    The ID for the violation location.
+	 */
 	public function get_location_id() {
 		return 'mcd-raw-content';
 	}
 
+	/**
+	 * The name of the violation location.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @return string    The name for the violation location.
+	 */
 	public function get_location_name() {
 		return __( 'Raw Content', 'zdt-mcd' );
 	}
 
+	/**
+	 * The hint for the violation location.
+	 *
+	 * @since  1.2.0.
+	 *
+	 * @return string    The hint for the violation location.
+	 */
 	public function get_location_hint() {
 		return __( 'The violation report originated from raw post content. This content was entered directly in the post\'s content field. It can be corrected by editing the post.', 'zdt-mcd' );
 	}
