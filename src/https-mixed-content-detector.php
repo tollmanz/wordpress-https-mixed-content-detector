@@ -115,8 +115,10 @@ class MCD_Mixed_Content_Detector {
 
 		// Load in the violation location objects
 		include $this->root_dir . '/violation-locations/raw-content.php';
+		include $this->root_dir . '/violation-locations/filtered-content.php';
 
 		$this->violation_location_collector->add( new MCD_Violation_Location_Raw_Content() );
+		$this->violation_location_collector->add( new MCD_Violation_Location_Filtered_Content() );
 
 		if ( defined('WP_CLI') && WP_CLI ) {
 			include $this->root_dir . '/wp-cli.php';
