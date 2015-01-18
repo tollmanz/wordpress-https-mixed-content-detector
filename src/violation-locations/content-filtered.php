@@ -1,6 +1,6 @@
 <?php
 
-class MCD_Violation_Location_Filtered_Content extends MCD_Violation_Location_Content_Base {
+class MCD_Violation_Location_Content_Filtered extends MCD_Violation_Location_Content_Base {
 	/**
 	 * The ID of the violation location.
 	 *

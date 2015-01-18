@@ -1,6 +1,6 @@
 <?php
 
-class MCD_Violation_Location_Shortcode_Content extends MCD_Violation_Location_Content_Base {
+class MCD_Violation_Location_Content_Shortcode extends MCD_Violation_Location_Content_Base {
 	/**
 	 * The shortcode being investigated.
 	 *

@@ -116,7 +116,7 @@ class MCD_Mixed_Content_Detector {
 		// Load in the violation location objects
 		include $this->root_dir . '/violation-locations/content-base.php';
 		include $this->root_dir . '/violation-locations/content-raw.php';
-		$this->violation_location_collector->add( new MCD_Violation_Location_Raw_Content() );
+		$this->violation_location_collector->add( new MCD_Violation_Location_Content_Raw() );
 
 		// Include the shortcode location and add all shortcodes as individual location
 		include $this->root_dir . '/violation-locations/content-shortcode.php';
@@ -126,16 +126,16 @@ class MCD_Mixed_Content_Detector {
 		$shortcodes = array_keys( $shortcode_tags );
 
 		foreach ( $shortcodes as $shortcode ) {
-			$this->violation_location_collector->add( new MCD_Violation_Location_Shortcode_Content( $shortcode ) );
+			$this->violation_location_collector->add( new MCD_Violation_Location_Content_Shortcode( $shortcode ) );
 		}
 
 		// Setup the autoembed location
 		include $this->root_dir . '/violation-locations/content-autoembed.php';
-		$this->violation_location_collector->add( new MCD_Violation_Location_Autoembed_Content() );
+		$this->violation_location_collector->add( new MCD_Violation_Location_Content_Autoembed() );
 
 		// Add the filtered content after the shortcodes in order for more specificity
 		include $this->root_dir . '/violation-locations/content-filtered.php';
-		$this->violation_location_collector->add( new MCD_Violation_Location_Filtered_Content() );
+		$this->violation_location_collector->add( new MCD_Violation_Location_Content_Filtered() );
 
 		// Load in WP CLI
 		if ( defined('WP_CLI') && WP_CLI ) {
