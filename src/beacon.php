@@ -206,14 +206,29 @@ class MCD_Beacon {
 	 * @return void
 	 */
 	public function handle_report_uri() {
-		// If you can turn on the plugin, the beacon should work for you
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
-
 		// Check to make sure the a beacon request has been made
 		if ( ! isset( $_GET['mcd'] ) || 'report' !== $_GET['mcd'] ) {
 			return;
+		}
+
+		// Authenticate the request for either sampling mode or auth mode
+		if ( true === MCD_SAMPLE_MODE && ! is_user_logged_in() ) {
+			/**
+			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
+			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
+			 * simple method to only allow a certain number of requests.
+			 */
+			$max_range     = ceil( 100 / (float) MCD_SAMPLE_FREQUENCY );
+			$random_number = rand( 1, $max_range );
+
+			if ( 1 !== $random_number ) {
+				return;
+			}
+		} else {
+			// If you can turn on the plugin, the beacon should work for you
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return;
+			}
 		}
 
 		// Verify the nonce is set

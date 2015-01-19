@@ -53,8 +53,15 @@ class MCD_Policy {
 	 * @return void
 	 */
 	public function add_cps_header() {
-		if ( ! is_user_logged_in() ) {
-			return;
+		/**
+		 * The CSP header is added should be added if we are in sample mode or if not in sample mode *and* logged in.
+		 * Sample mode will set set a header for every request; however, the beacon will only accept
+		 * MCD_SAMPLE_FREQUENCY percent of requests.
+		 */
+		if ( false === MCD_SAMPLE_MODE ) {
+			if ( ! is_user_logged_in() ) {
+				return;
+			}
 		}
 
 		$monitor_admin     = defined( 'MCD_MONITOR_ADMIN' ) && true === MCD_MONITOR_ADMIN && is_admin();
