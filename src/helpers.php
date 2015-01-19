@@ -7,20 +7,26 @@ if ( ! function_exists( 'mcd_get_violation_wp_query' ) ) :
  * @since  1.1.0.
  *
  * @param  int         $num    The number of violations to query.
+ * @param  int         $id     Specific report to lookup.
  * @return WP_Query            The WP_Query containing the violations
  */
-function mcd_get_violation_wp_query( $num = 999 ) {
+function mcd_get_violation_wp_query( $num = 999, $id = 0 ) {
 	// Determine number of violations to display
 	$num = ( ! empty( $num ) ) ? intval( $num ) : 999; // Use intval to allow -1 if desired
 
-	// Query for all violations
-	$violations = new WP_Query( array(
-		'post_type' => 'csp-report',
+	$args = array(
+		'post_type'      => 'csp-report',
 		'posts_per_page' => $num,
-		'no_found_rows' => true,
-	) );
+		'no_found_rows'  => true,
+	);
 
-	return $violations;
+	// If a specific ID is queried, add it to the query
+	if ( 0 !== $id ) {
+		$args['p']              = absint( $id );
+		$args['posts_per_page'] = 1;
+	}
+
+	return new WP_Query( $args );
 }
 endif;
 
@@ -45,14 +51,15 @@ if ( ! function_exists( 'mcd_get_violation_data' ) ) :
  * @since  1.1.0.
  *
  * @param  int      $num    The number of violations to get.
+ * @param  int      $id     Specific report to lookup.
  * @return array            The data for the violations.
  */
-function mcd_get_violation_data( $num = 999 ) {
+function mcd_get_violation_data( $num = 999, $id = 0 ) {
 	// Set a data collector
 	$data = array();
 
 	// Query for the violations
-	$violation_wp_query = mcd_get_violation_wp_query( $num );
+	$violation_wp_query = mcd_get_violation_wp_query( $num, $id );
 
 	// Package up the important data
 	if ( $violation_wp_query->have_posts() ) {
@@ -68,16 +75,20 @@ function mcd_get_violation_data( $num = 999 ) {
 			$original_policy = get_post_meta( get_the_ID(), 'original-policy', true );
 			$original_policy = ( ! empty( $original_policy ) ) ? $original_policy : __( 'N/A', 'zdt-mcd' );
 
+			$location = get_post_meta( get_the_ID(), 'location', true );
+			$location = ( ! empty( $location ) ) ? $location : __( 'N/A', 'zdt-mcd' );
+
 			$valid_https_uri = get_post_meta( get_the_ID(), 'valid-https-uri', true );
 			$valid_https_uri = ( '0' === $valid_https_uri || '1' === $valid_https_uri ) ? intval( $valid_https_uri ) :  -1;
 
 			$data[ get_the_ID() ] = array(
 				'id'                 => get_the_ID(),
-				'blocked-uri'        => get_the_title(),
+				'blocked-uri'        => get_post_meta( get_the_ID(), 'blocked-uri', true ),
 				'document-uri'       => get_post_meta( get_the_ID(), 'document-uri', true ),
 				'referrer'           => $referrer,
 				'violated-directive' => $v_directive,
 				'original-policy'    => $original_policy,
+				'location'           => $location,
 				'resolved'           => absint( get_post_meta( get_the_ID(), 'resolved', true ) ),
 				'valid-https-uri'    => $valid_https_uri,
 			);
@@ -242,5 +253,71 @@ if ( ! function_exists( 'mcd_uri_has_secure_version' ) ) :
 function mcd_uri_has_secure_version( $uri ) {
 	$https_uri = set_url_scheme( $uri, 'https' );
 	return mcd_is_valid_uri( $https_uri );
+}
+endif;
+
+if ( ! function_exists( 'mcd_locate_all_violations' ) ) :
+/**
+ * Locate the source of all CSP Reports.
+ *
+ * @since  1.2.0.
+ *
+ * @return int    The number of reports located.
+ */
+function mcd_locate_all_violations() {
+	$violation_data = mcd_get_violation_data( -1 );
+	return mcd_handle_violation_locations( $violation_data );
+
+}
+endif;
+
+if ( ! function_exists( 'mcd_locate_violation' ) ) :
+/**
+ * Locate the source of an individual CSP Report.
+ *
+ * @since  1.2.0.
+ *
+ * @param  int                   $id    The ID of the report to investigate.
+ * @return array|bool|WP_Post           The result of the investigation.
+ */
+function mcd_locate_violation( $id ) {
+	$violation_data = mcd_get_violation_data( 1, $id );
+	return mcd_handle_violation_locations( $violation_data );
+}
+endif;
+
+if ( ! function_exists( 'mcd_handle_violation_locations' ) ) :
+/**
+ * Handle the recording of 1 or more violation locations.
+ *
+ * @since  1.2.0.
+ *
+ * @param  WP_Query              $violation_data    A list of violation locations.
+ * @return array|bool|WP_Post                       The result of the investigation.
+ */
+function mcd_handle_violation_locations( $violation_data ) {
+	$violation_locations = mcd_get_mixed_content_detector()->violation_location_collector->get_all();
+	$locations           = 0;
+
+	foreach ( $violation_data as $post_id => $data ) {
+		$found = false;
+
+		foreach ( $violation_locations as $violation_location ) {
+			if ( true === $violation_location->match( $data ) ) {
+				$location = $violation_location->get_location_id();
+				$locations++;
+				$found = true;
+				break;
+			}
+		}
+
+		if ( false === $found ) {
+			$location = __( 'unknown', 'zdt-mcd' );
+		}
+
+		update_post_meta( $post_id, 'location', $location );
+	}
+
+	return $locations;
 }
 endif;
