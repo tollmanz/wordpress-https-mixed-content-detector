@@ -3,7 +3,7 @@ Contributors: tollmanz
 Tags: https, tls, ssl
 Requires at least: 4.0.1
 Tested up to: trunk
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -34,8 +34,14 @@ This section describes how to install the plugin and get it working.
 == Screenshots ==
 
 1. Content Security Policy reports are collected in the Content Security Policy Reports list table.
+2. Information about Content Security Policy reports is available via WP CLI.
 
 == Changelog ==
+
+= 1.2.0 =
+* Add check for violation locations
+* Add sampling mode for examining non-logged in traffic
+* Add more content shown in the WP list table
 
 = 1.1.0 =
 * Add check for HTTPS domain when logging violation
@@ -52,6 +58,9 @@ This section describes how to install the plugin and get it working.
 * Initial release
 
 == Upgrade Notice ==
+
+= 1.2.0 =
+Add violation locations, sampling mode and more WP list table information
 
 = 1.1.0 =
 Adds HTTPS domain checking, WP CLI commands and more specific CSP directives
