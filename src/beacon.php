@@ -121,6 +121,7 @@ class MCD_Beacon {
 		$columns['referrer']           = __( 'Referrer', 'zdt-mcd' );
 		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mcd' );
 		$columns['report-date']        = __( 'Date', 'zdt-mcd' );
+		$columns['location']           = __( 'Location', 'zdt-mcd' );
 		$columns['resolve-status']     = __( 'Resolved', 'zdt-mcd' );
 		$columns['secure-status']      = __( 'Secure URI', 'zdt-mcd' );
 
@@ -158,6 +159,21 @@ class MCD_Beacon {
 
 			case 'report-date' :
 				echo human_time_diff( get_the_date( 'U', get_the_ID() ) );
+				break;
+
+			case 'location':
+				$location_id = get_post_meta( get_the_ID(), 'location', true );
+				$collector = mcd_get_mixed_content_detector()->violation_location_collector;
+				$location = $collector->get_item( $location_id );
+
+				if ( method_exists( $location, 'get_location_name' ) ) {
+					echo esc_html( $location->get_location_name() );
+				} else if ( 'unknown' === $location_id ) {
+					echo __( 'Unknown', 'zdt-mcd' );
+				} else {
+					echo __( 'N/A', 'zdt-mcd' );
+				}
+
 				break;
 
 			case 'resolve-status':
