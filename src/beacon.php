@@ -248,6 +248,9 @@ class MCD_Beacon {
 			}
 		}
 
+		// Determine the location of the violation
+		mcd_locate_violation( $post_id );
+
 		// Check if the domain supports HTTPS
 		if ( isset( $clean_data['blocked-uri'] ) ) {
 			$uri = $clean_data['blocked-uri'];
