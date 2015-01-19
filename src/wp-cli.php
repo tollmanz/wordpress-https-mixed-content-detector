@@ -41,7 +41,7 @@ class MCD_Command extends WP_CLI_Command {
 						} elseif ( 0 === $value ) {
 							$value = $unresolved;
 						} else {
-							$value = __( '-', 'zdt-mdc' );
+							$value = __( '-', 'zdt-mcd' );
 						}
 					}
 
@@ -58,13 +58,14 @@ class MCD_Command extends WP_CLI_Command {
 
 			// Set up the Headers and Footers
 			$header_footers = array(
-				__( 'ID', 'zdt-mdc' ),
-				__( 'Blocked URI', 'zdt-mdc' ),
-				__( 'Document URI', 'zdt-mdc' ),
-				__( 'Referrer', 'zdt-mdc' ),
-				__( 'Violated Directive', 'zdt-mdc' ),
-				__( 'R', 'zdt-mdc' ),
-				__( 'S', 'zdt-mdc' ),
+				__( 'ID', 'zdt-mcd' ),
+				__( 'Blocked URI', 'zdt-mcd' ),
+				__( 'Document URI', 'zdt-mcd' ),
+				__( 'Referrer', 'zdt-mcd' ),
+				__( 'Directive', 'zdt-mcd' ),
+				__( 'Location', 'zdt-mcd' ),
+				__( 'R', 'zdt-mcd' ),
+				__( 'S', 'zdt-mcd' ),
 			);
 
 			$table->setHeaders( $header_footers );
@@ -76,7 +77,7 @@ class MCD_Command extends WP_CLI_Command {
 			// Print the key
 			WP_CLI::line( "\n  R = Resolved, S = Secure URI Available\n" );
 		} else {
-			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mdc' ) );
+			WP_CLI::warning( __( 'There are no CSP violations logged.', 'zdt-mcd' ) );
 		}
 	}
 
@@ -252,6 +253,95 @@ class MCD_Command extends WP_CLI_Command {
 		}
 
 		WP_CLI::success( $message );
+	}
+
+	/**
+	 * Attempt to locate the source of a violation.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of the CSP Report to investigate.
+	 *
+	 * [--all]
+	 * : Locate source of all CSP Reports.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     # Investigate CSP Report with post ID 35
+	 *     wp mcd locate 35
+	 *
+	 *     # Investigate all CSP Reports
+	 *     wp mcd locate --all
+	 *
+	 * @since 1.2.0.
+	 *
+	 * @subcommand locate
+	 *
+	 * @param  array    $args          List of arguments passed to command.
+	 * @param  array    $assoc_args    List of flags passed to command
+	 * @return void
+	 */
+	public function _locate( $args, $assoc_args ) {
+		$id  = ( ! empty( $args[0] ) ) ? absint( $args[0] ) : 0;
+		$all = ( isset( $assoc_args['all'] ) );
+
+		$locations = 0;
+
+		if ( 0 !== $id ) {
+			$locations = mcd_locate_violation( $id );
+		} elseif ( true === $all ) {
+			$locations = mcd_locate_all_violations();
+		}
+
+		if ( 0 === $locations ) {
+			$message = __( 'No reports located', 'zdt-mcd' );
+		} else {
+			$message = sprintf(
+				_n(
+					'1 blocked URI located',
+					'%s blocked URIs located',
+					absint( $locations ),
+					'zdt-mcd'
+				),
+				absint( $locations )
+			);
+		}
+
+		WP_CLI::success( $message );
+	}
+
+	/**
+	 * Explain the meaning of a specific violation location.
+	 *
+	 * ## OPTIONS
+	 *
+	 * [<id>]
+	 * : The ID of violation location.
+	 *
+	 * ## EXAMPLES
+	 *
+	 *     wp mcd explain mcd-raw-content
+	 *
+	 * @since 1.2.0.
+	 *
+	 * @subcommand explain
+	 *
+	 * @param  array    $args          List of arguments passed to command.
+	 * @param  array    $assoc_args    List of flags passed to command
+	 * @return void
+	 */
+	public function _explain( $args, $assoc_args ) {
+		$id = ( ! empty( $args[0] ) ) ? sanitize_title_with_dashes( $args[0] ) : '';
+
+		if ( ! empty( $id ) ) {
+			$violation = mcd_get_mixed_content_detector()->violation_location_collector->get_item( $id );
+			$hint      = $violation->get_location_hint();
+
+			if ( ! empty( $hint ) ) {
+				WP_CLI::line( $hint );
+			}
+		}
 	}
 }
 endif;

@@ -71,7 +71,7 @@ class MCD_Beacon {
 			'show_in_menu'        => true,
 			'show_in_admin_bar'   => false,
 			'menu_position'       => 25,
-			'menu_icon'           => null,
+			'menu_icon'           => 'dashicons-flag',
 			'can_export'          => false,
 			'delete_with_user'    => false,
 			'hierarchical'        => false,
@@ -114,12 +114,16 @@ class MCD_Beacon {
 	 */
 	public function manage_edit_csp_report_columns( $columns ) {
 		unset( $columns['title'] );
+		unset( $columns['date'] );
 
-		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mdc' );
-		$columns['document-uri']       = __( 'Document URI', 'zdt-mdc' );
-		$columns['referrer']           = __( 'Referrer', 'zdt-mdc' );
-		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mdc' );
-		$columns['original-policy']    = __( 'Original Policy', 'zdt-mdc' );
+		$columns['blocked-uri']        = __( 'Blocked URI', 'zdt-mcd' );
+		$columns['document-uri']       = __( 'Document URI', 'zdt-mcd' );
+		$columns['referrer']           = __( 'Referrer', 'zdt-mcd' );
+		$columns['violated-directive'] = __( 'Violated Directive', 'zdt-mcd' );
+		$columns['report-date']        = __( 'Date', 'zdt-mcd' );
+		$columns['location']           = __( 'Location', 'zdt-mcd' );
+		$columns['resolve-status']     = __( 'Resolved', 'zdt-mcd' );
+		$columns['secure-status']      = __( 'Secure URI', 'zdt-mcd' );
 
 		return $columns;
 	}
@@ -136,7 +140,7 @@ class MCD_Beacon {
 	public function manage_csp_report_posts_custom_column( $column, $post_id ) {
 		switch ( $column ) {
 			case 'blocked-uri' :
-				echo esc_url( get_the_title( $post_id ) );
+				echo esc_url( get_post_meta( $post_id , 'blocked-uri' , true ) );
 				break;
 
 			case 'document-uri' :
@@ -153,9 +157,41 @@ class MCD_Beacon {
 				echo ( ! empty( $v_directive ) ) ? esc_html( wp_strip_all_tags( $v_directive ) ) : __( 'N/A', 'zdt-mcd' );
 				break;
 
-			case 'original-policy' :
-				$original_policy = get_post_meta( $post_id , 'original-policy' , true );
-				echo ( ! empty( $original_policy ) ) ? esc_html( wp_strip_all_tags( $original_policy ) ) : __( 'N/A', 'zdt-mcd' );
+			case 'report-date' :
+				echo human_time_diff( get_the_date( 'U', get_the_ID() ) );
+				break;
+
+			case 'location':
+				$location_id = get_post_meta( get_the_ID(), 'location', true );
+				$collector = mcd_get_mixed_content_detector()->violation_location_collector;
+				$location = $collector->get_item( $location_id );
+
+				if ( method_exists( $location, 'get_location_name' ) ) {
+					echo esc_html( $location->get_location_name() );
+				} else if ( 'unknown' === $location_id ) {
+					echo __( 'Unknown', 'zdt-mcd' );
+				} else {
+					echo __( 'N/A', 'zdt-mcd' );
+				}
+
+				break;
+
+			case 'resolve-status':
+				echo ( 1 === (int) get_post_meta( get_the_ID(), 'resolved', true ) ) ? __( 'Yes', 'zdt-mcd' ) : __( 'No', 'zdt-mcd' );
+				break;
+
+			case 'secure-status':
+				$status = (int) get_post_meta( get_the_ID(), 'valid-https-uri', true );
+
+				if ( 1 === $status ) {
+					$message = __( 'Yes', 'zdt-mcd' );
+				} elseif ( 0 === $status ) {
+					$message = __( 'No', 'zdt-mcd' );
+				} else {
+					$message = __( 'Unknown', 'zdt-mcd' );
+				}
+
+				echo $message;
 				break;
 		}
 	}
@@ -170,14 +206,29 @@ class MCD_Beacon {
 	 * @return void
 	 */
 	public function handle_report_uri() {
-		// If you can turn on the plugin, the beacon should work for you
-		if ( ! current_user_can( 'activate_plugins' ) ) {
-			return;
-		}
-
 		// Check to make sure the a beacon request has been made
 		if ( ! isset( $_GET['mcd'] ) || 'report' !== $_GET['mcd'] ) {
 			return;
+		}
+
+		// Authenticate the request for either sampling mode or auth mode
+		if ( true === MCD_SAMPLE_MODE && ! is_user_logged_in() ) {
+			/**
+			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
+			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
+			 * simple method to only allow a certain number of requests.
+			 */
+			$max_range     = ceil( 100 / (float) MCD_SAMPLE_FREQUENCY );
+			$random_number = rand( 1, $max_range );
+
+			if ( 1 !== $random_number ) {
+				return;
+			}
+		} else {
+			// If you can turn on the plugin, the beacon should work for you
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return;
+			}
 		}
 
 		// Verify the nonce is set
@@ -227,6 +278,9 @@ class MCD_Beacon {
 				update_post_meta( $post_id, $key, $value );
 			}
 		}
+
+		// Determine the location of the violation
+		mcd_locate_violation( $post_id );
 
 		// Check if the domain supports HTTPS
 		if ( isset( $clean_data['blocked-uri'] ) ) {
