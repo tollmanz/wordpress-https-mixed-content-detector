@@ -9,7 +9,7 @@ abstract class MCD_Violation_Location_Content_Base extends MCD_Violation_Locatio
 	 * @param  array    $violation    The violation data.
 	 * @return bool                   True if the URI was found; false if it was not.
 	 */
-	public function result( $violation ) {
+	public function match( $violation ) {
 		// Ensure that the content can even be searched first
 		if ( false !== $this->_is_content_searchable( $violation ) ) {
 			// Get the content for searching

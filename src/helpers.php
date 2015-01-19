@@ -303,7 +303,7 @@ function mcd_handle_violation_locations( $violation_data ) {
 		$found = false;
 
 		foreach ( $violation_locations as $violation_location ) {
-			if ( true === $violation_location->result( $data ) ) {
+			if ( true === $violation_location->match( $data ) ) {
 				$location = $violation_location->get_location_id();
 				$locations++;
 				$found = true;

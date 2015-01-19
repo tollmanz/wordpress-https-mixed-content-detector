@@ -18,7 +18,7 @@ abstract class MCD_Violation_Location_Enqueue_Base extends MCD_Violation_Locatio
 	 * @param  array    $violation    The violation data.
 	 * @return bool                   True if the URI was found; false if it was not.
 	 */
-	public function result( $violation ) {
+	public function match( $violation ) {
 		$enqueues = $this->_get_enqueues( $this->_type );
 
 		// Get the blocked URI

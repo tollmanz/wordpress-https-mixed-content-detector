@@ -36,5 +36,5 @@ interface MCD_Violation_Location {
 	 * @param  array    $violation    The violation data.
 	 * @return bool                   True if the found; false if not.
 	 */
-	public function result( $violation );
+	public function match( $violation );
 }
