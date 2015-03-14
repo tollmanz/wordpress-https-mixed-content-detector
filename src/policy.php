@@ -67,7 +67,7 @@ class MCD_Policy {
 		$monitor_admin     = defined( 'MCD_MONITOR_ADMIN' ) && true === MCD_MONITOR_ADMIN && is_admin();
 		$monitor_front_end = defined( 'MCD_MONITOR_FRONT_END' ) && true === MCD_MONITOR_FRONT_END && ! is_admin();
 
-		if ( $monitor_admin || $monitor_front_end ) {
+		if ( is_ssl() && ( $monitor_admin || $monitor_front_end ) ) {
 			header( $this->get_cps_header() );
 		}
 	}
