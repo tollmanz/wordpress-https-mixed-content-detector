@@ -82,9 +82,9 @@ class MCD_Beacon {
 				'title',
 			),
 			'labels'              => array(
-				'name'               => __( 'Content Security Policy Report', 'zdt-mcd' ),
+				'name'               => __( 'Content Security Policy Reports', 'zdt-mcd' ),
 				'singular_name'      => __( 'Content Security Policy Report', 'zdt-mcd' ),
-				'menu_name'          => __( 'Content Security Policy Reports', 'zdt-mcd' ),
+				'menu_name'          => __( 'CSP Reports', 'zdt-mcd' ),
 				'name_admin_bar'     => __( 'Content Security Policy Reports', 'zdt-mcd' ),
 				'add_new'            => __( 'Add New', 'zdt-mcd' ),
 				'add_new_item'       => __( 'Add New Content Security Policy Report', 'zdt-mcd' ),
