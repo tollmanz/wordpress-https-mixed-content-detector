@@ -315,13 +315,13 @@ class MCD_Beacon {
 				'sanitize_callback' => array( $this, 'sanitize_blocked_uri' ),
 			),
 			'document-uri'       => array(
-				'sanitize_callback' => 'esc_url',
+				'sanitize_callback' => 'esc_url_raw',
 			),
 			'original-policy'    => array(
 				'sanitize_callback' => array( $this, 'sanitize_original_policy' ),
 			),
 			'referrer'           => array(
-				'sanitize_callback' => 'esc_url',
+				'sanitize_callback' => 'esc_url_raw',
 			),
 			'status-code'        => array(
 				'sanitize_callback' => 'absint',
@@ -349,7 +349,7 @@ class MCD_Beacon {
 		} elseif ( '' === trim( $value ) ) { // The root document
 			return site_url();
 		} else {
-			return esc_url( $value );
+			return esc_url_raw( $value );
 		}
 	}
 
