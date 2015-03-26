@@ -81,6 +81,10 @@ class MCD_Beacon {
 			'supports'            => array(
 				'title',
 			),
+			'map_meta_cap'        => true,
+			'capabilities'        => array(
+				'create_posts' => 'do_not_allow',
+			),
 			'labels'              => array(
 				'name'               => __( 'Content Security Policy Report', 'zdt-mcd' ),
 				'singular_name'      => __( 'Content Security Policy Report', 'zdt-mcd' ),
