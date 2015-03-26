@@ -160,6 +160,8 @@ class MCD_Beacon {
 	 * @return void
 	 */
 	public function manage_csp_report_posts_custom_column( $column, $post_id ) {
+		$icon_format = '<span class="dashicons dashicons-%1$s csp-%1$s"></span><span class="screen-reader-text">%2$s</span>';
+
 		switch ( $column ) {
 			case 'blocked-uri' :
 				echo esc_url( get_post_meta( $post_id , 'blocked-uri' , true ) );
@@ -199,18 +201,26 @@ class MCD_Beacon {
 				break;
 
 			case 'resolve-status':
-				echo ( 1 === (int) get_post_meta( get_the_ID(), 'resolved', true ) ) ? __( 'Yes', 'zdt-mcd' ) : __( 'No', 'zdt-mcd' );
+				$status = (int) get_post_meta( get_the_ID(), 'resolved', true );
+
+				if ( 1 === $status ) {
+					$message = sprintf( $icon_format, 'yes', __( 'Yes', 'zdt-mcd' ) );
+				} else {
+					$message = sprintf( $icon_format, 'no-alt', __( 'No', 'zdt-mcd' ) );
+				}
+
+				echo $message;
 				break;
 
 			case 'secure-status':
 				$status = (int) get_post_meta( get_the_ID(), 'valid-https-uri', true );
 
 				if ( 1 === $status ) {
-					$message = __( 'Yes', 'zdt-mcd' );
+					$message = sprintf( $icon_format, 'yes', __( 'Yes', 'zdt-mcd' ) );
 				} elseif ( 0 === $status ) {
-					$message = __( 'No', 'zdt-mcd' );
+					$message = sprintf( $icon_format, 'no-alt', __( 'No', 'zdt-mcd' ) );
 				} else {
-					$message = __( 'Unknown', 'zdt-mcd' );
+					$message = sprintf( $icon_format, 'editor-help', __( 'Unknown', 'zdt-mcd' ) );
 				}
 
 				echo $message;
