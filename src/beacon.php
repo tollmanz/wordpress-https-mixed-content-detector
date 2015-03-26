@@ -46,6 +46,7 @@ class MCD_Beacon {
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_filter( 'manage_edit-csp-report_columns', array( $this, 'manage_edit_csp_report_columns' ) );
 		add_action( 'manage_csp-report_posts_custom_column' , array( $this, 'manage_csp_report_posts_custom_column' ), 10, 2 );
+		add_action( 'load-edit.php', array( $this, 'action_load_edit' ) );
 
 		add_action( 'init', array( $this, 'handle_report_uri' ) );
 	}
@@ -102,6 +103,27 @@ class MCD_Beacon {
 		);
 
 		register_post_type( 'csp-report', $args );
+	}
+
+	/**
+	 * Enqueue assets on the CSP Reports admin screen.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @return void
+	 */
+	public function action_load_edit() {
+		if ( 'csp-report' == get_current_screen()->post_type ) {
+			wp_enqueue_style(
+				'mcd',
+				plugin_dir_url( __FILE__ ) . 'assets/admin.css',
+				array(
+					'wp-admin',
+				),
+				filemtime( plugin_dir_path( __FILE__ ) . 'assets/admin.css'
+			) );
+		}
+		var_dump( mcd_get_policy()->get_default_policies() );
 	}
 
 	/**
