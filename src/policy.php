@@ -200,6 +200,7 @@ class MCD_Policy {
 			'object-src'  => "https:",
 			'script-src'  => "https: 'unsafe-inline' 'unsafe-eval'",
 			'style-src'   => "https: 'unsafe-inline'",
+			'form-action' => "https:",
 		);
 	}
 }
