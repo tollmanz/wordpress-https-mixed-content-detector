@@ -123,7 +123,6 @@ class MCD_Beacon {
 				filemtime( plugin_dir_path( __FILE__ ) . 'assets/admin.css'
 			) );
 		}
-		var_dump( mcd_get_policy()->get_default_policies() );
 	}
 
 	/**
