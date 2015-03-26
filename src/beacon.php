@@ -164,7 +164,7 @@ class MCD_Beacon {
 
 		switch ( $column ) {
 			case 'blocked-uri' :
-				echo esc_url( get_post_meta( $post_id , 'blocked-uri' , true ) );
+				echo esc_url( remove_query_arg( 'ver', get_post_meta( $post_id , 'blocked-uri' , true ) ) );
 				break;
 
 			case 'document-uri' :
