@@ -215,6 +215,10 @@ class MCD_Beacon {
 			return;
 		}
 
+		if ( ! headers_sent() ) {
+			status_header( 204 );
+		}
+
 		// Authenticate the request for either sampling mode or auth mode
 		if ( true === MCD_SAMPLE_MODE && ! is_user_logged_in() ) {
 			/**
@@ -226,18 +230,18 @@ class MCD_Beacon {
 			$random_number = rand( 1, $max_range );
 
 			if ( 1 !== $random_number ) {
-				return;
+				exit;
 			}
 		} else {
 			// If you can turn on the plugin, the beacon should work for you
 			if ( ! current_user_can( 'activate_plugins' ) ) {
-				return;
+				exit;
 			}
 		}
 
 		// Verify the nonce is set
 		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'mcd-report-uri' ) ) {
-			return;
+			exit;
 		}
 
 		// Grab the contents of the request
@@ -245,7 +249,7 @@ class MCD_Beacon {
 
 		// Make sure the expected data is sent with the request
 		if ( ! isset( $contents['csp-report'] ) ) {
-			return;
+			exit;
 		}
 
 		$clean_data = array();
