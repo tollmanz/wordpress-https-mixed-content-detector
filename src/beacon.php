@@ -46,6 +46,7 @@ class MCD_Beacon {
 		add_action( 'init', array( $this, 'register_post_type' ) );
 		add_filter( 'manage_edit-csp-report_columns', array( $this, 'manage_edit_csp_report_columns' ) );
 		add_action( 'manage_csp-report_posts_custom_column' , array( $this, 'manage_csp_report_posts_custom_column' ), 10, 2 );
+		add_action( 'load-edit.php', array( $this, 'action_load_edit' ) );
 
 		add_action( 'init', array( $this, 'handle_report_uri' ) );
 	}
@@ -109,6 +110,26 @@ class MCD_Beacon {
 	}
 
 	/**
+	 * Enqueue assets on the CSP Reports admin screen.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @return void
+	 */
+	public function action_load_edit() {
+		if ( 'csp-report' == get_current_screen()->post_type ) {
+			wp_enqueue_style(
+				'mcd',
+				plugin_dir_url( __FILE__ ) . 'assets/admin.css',
+				array(
+					'wp-admin',
+				),
+				filemtime( plugin_dir_path( __FILE__ ) . 'assets/admin.css'
+			) );
+		}
+	}
+
+	/**
 	 * Register new columns for the CSP Report list table.
 	 *
 	 * @since  1.0.0.
@@ -142,9 +163,11 @@ class MCD_Beacon {
 	 * @return void
 	 */
 	public function manage_csp_report_posts_custom_column( $column, $post_id ) {
+		$icon_format = '<span class="dashicons dashicons-%1$s csp-%1$s"></span><span class="screen-reader-text">%2$s</span>';
+
 		switch ( $column ) {
 			case 'blocked-uri' :
-				echo esc_url( get_post_meta( $post_id , 'blocked-uri' , true ) );
+				echo esc_url( remove_query_arg( 'ver', get_post_meta( $post_id , 'blocked-uri' , true ) ) );
 				break;
 
 			case 'document-uri' :
@@ -181,18 +204,26 @@ class MCD_Beacon {
 				break;
 
 			case 'resolve-status':
-				echo ( 1 === (int) get_post_meta( get_the_ID(), 'resolved', true ) ) ? __( 'Yes', 'zdt-mcd' ) : __( 'No', 'zdt-mcd' );
+				$status = (int) get_post_meta( get_the_ID(), 'resolved', true );
+
+				if ( 1 === $status ) {
+					$message = sprintf( $icon_format, 'yes', __( 'Yes', 'zdt-mcd' ) );
+				} else {
+					$message = sprintf( $icon_format, 'no-alt', __( 'No', 'zdt-mcd' ) );
+				}
+
+				echo $message;
 				break;
 
 			case 'secure-status':
 				$status = (int) get_post_meta( get_the_ID(), 'valid-https-uri', true );
 
 				if ( 1 === $status ) {
-					$message = __( 'Yes', 'zdt-mcd' );
+					$message = sprintf( $icon_format, 'yes', __( 'Yes', 'zdt-mcd' ) );
 				} elseif ( 0 === $status ) {
-					$message = __( 'No', 'zdt-mcd' );
+					$message = sprintf( $icon_format, 'no-alt', __( 'No', 'zdt-mcd' ) );
 				} else {
-					$message = __( 'Unknown', 'zdt-mcd' );
+					$message = sprintf( $icon_format, 'editor-help', __( 'Unknown', 'zdt-mcd' ) );
 				}
 
 				echo $message;
