@@ -235,7 +235,7 @@ class MCD_Beacon {
 		}
 
 		// Clean the CSP data
-		$clean_data = $this->clean_csp_data( $contents['csp-report'] );
+		$clean_data = $this->sanitize_csp_data( $contents['csp-report'] );
 
 		// Do not proceed if the blocked URI was not properly sanitized
 		if ( ! isset( $clean_data['blocked-uri'] ) ) {
@@ -319,7 +319,7 @@ class MCD_Beacon {
 	 * @param  array    $data    Array of CSP report data.
 	 * @return array             Cleaned CSP data.
 	 */
-	public function clean_csp_data( $data ) {
+	public function sanitize_csp_data( $data ) {
 		$clean_data = array();
 
 		// Cycle through each field in the report to make sure it is whitelisted
