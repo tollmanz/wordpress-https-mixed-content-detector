@@ -219,28 +219,10 @@ class MCD_Beacon {
 			status_header( 204 );
 		}
 
-		// Authenticate the request for either sampling mode or auth mode
-		if ( true === MCD_SAMPLE_MODE && ! is_user_logged_in() ) {
-			/**
-			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
-			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
-			 * simple method to only allow a certain number of requests.
-			 */
-			$max_range     = ceil( 100 / (float) MCD_SAMPLE_FREQUENCY );
-			$random_number = rand( 1, $max_range );
+		// Check if the request passes in either sampling or admin mode
+		$nonce = ( isset( $_GET['nonce'] ) ) ? $_GET['nonce'] : '';
 
-			if ( 1 !== $random_number ) {
-				exit;
-			}
-		} else {
-			// If you can turn on the plugin, the beacon should work for you
-			if ( ! current_user_can( 'activate_plugins' ) ) {
-				exit;
-			}
-		}
-
-		// Verify the nonce is set
-		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'mcd-report-uri' ) ) {
+		if ( ! $this->authenticate_request( MCD_SAMPLE_MODE, is_user_logged_in(), MCD_SAMPLE_FREQUENCY, $nonce, 'mcd-report-uri' ) ) {
 			exit;
 		}
 
@@ -308,6 +290,47 @@ class MCD_Beacon {
 		}
 
 		exit();
+	}
+
+	/**
+	 * Determine if a storage request is authenticated or not.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  bool      $sample_mode          Whether or not in sample mode.
+	 * @param  bool      $is_user_logged_in    Whether or not the user is logged in.
+	 * @param  int       $sample_frequency     The frequency of sampling.
+	 * @param  string    $nonce                The nonce value.
+	 * @param  string    $action               The nonce action.
+	 * @return bool                            Whether or not the request is authenticated.
+	 */
+	public function authenticate_request( $sample_mode, $is_user_logged_in, $sample_frequency, $nonce, $action ) {
+		// Authenticate the request for either sampling mode or auth mode
+		if ( true === $sample_mode && ! $is_user_logged_in ) {
+			/**
+			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
+			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
+			 * simple method to only allow a certain number of requests.
+			 */
+			$max_range     = ceil( 100 / (float) $sample_frequency );
+			$random_number = rand( 1, $max_range );
+
+			if ( 1 !== $random_number ) {
+				return false;
+			}
+		} else {
+			// If you can turn on the plugin, the beacon should work for you
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return false;
+			}
+		}
+
+		// Verify the nonce is set
+		if ( ! wp_verify_nonce( $nonce, $action ) ) {
+			return false;
+		}
+
+		return true;
 	}
 
 	/**
