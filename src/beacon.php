@@ -222,6 +222,7 @@ class MCD_Beacon {
 		// Check if the request passes in either sampling or admin mode
 		$nonce = ( isset( $_GET['nonce'] ) ) ? $_GET['nonce'] : '';
 
+		// Verify that the request can be logged
 		if ( ! $this->authenticate_request( MCD_SAMPLE_MODE, is_user_logged_in(), MCD_SAMPLE_FREQUENCY, $nonce, 'mcd-report-uri' ) ) {
 			exit;
 		}
