@@ -230,15 +230,20 @@ class MCD_Beacon {
 		$contents = json_decode( file_get_contents( 'php://input' ), true );
 
 		// Make sure the expected data is sent with the request
-		if ( ! isset( $contents['csp-report'] ) || ! isset( $contents['csp-report']['blocked-uri'] ) ) {
+		if ( ! isset( $contents['csp-report'] ) ) {
 			exit;
 		}
 
 		// Clean the CSP data
 		$clean_data = $this->clean_csp_data( $contents['csp-report'] );
 
+		// Do not proceed if the blocked URI was not properly sanitized
+		if ( ! isset( $clean_data['blocked-uri'] ) ) {
+			exit;
+		}
+
 		// Store the report
-		$report_id = $this->create_report( $contents['csp-report']['blocked-uri'] );
+		$report_id = $this->create_report( $clean_data['blocked-uri'] );
 
 		// Store the associated data
 		$this->save_report_data( $report_id, $clean_data );
@@ -247,21 +252,19 @@ class MCD_Beacon {
 		mcd_locate_violation( $report_id );
 
 		// Check if the domain supports HTTPS
-		if ( isset( $clean_data['blocked-uri'] ) ) {
-			$uri = $clean_data['blocked-uri'];
+		$uri = $clean_data['blocked-uri'];
 
-			/**
-			 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
-			 * These are marked as -1 to represent an "unknown" status.
-			 */
-			if ( false !== strpos( $uri, 'http', 0 ) ) {
-				$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
-			} else {
-				$result = -1;
-			}
-
-			update_post_meta( $report_id, 'valid-https-uri', $result );
+		/**
+		 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
+		 * These are marked as -1 to represent an "unknown" status.
+		 */
+		if ( false !== strpos( $uri, 'http', 0 ) ) {
+			$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
+		} else {
+			$result = -1;
 		}
+
+		update_post_meta( $report_id, 'valid-https-uri', $result );
 
 		exit();
 	}
