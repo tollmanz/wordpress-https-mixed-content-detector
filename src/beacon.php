@@ -230,7 +230,7 @@ class MCD_Beacon {
 		$contents = json_decode( file_get_contents( 'php://input' ), true );
 
 		// Make sure the expected data is sent with the request
-		if ( ! isset( $contents['csp-report'] ) ) {
+		if ( ! isset( $contents['csp-report'] ) || ! isset( $contents['csp-report']['blocked-uri'] ) ) {
 			exit;
 		}
 
