@@ -219,11 +219,24 @@ if ( ! function_exists( 'mcd_is_valid_uri') ) :
  * @return bool              True if URI is connectable; false if it is not.
  */
 function mcd_is_valid_uri( $uri ) {
+	$pieces = parse_url( $uri );
+
+	if ( ! isset( $pieces['host'] ) ) {
+		return false;
+	}
+
+	// Piece the domain back together
+	$uri  = $pieces['host'];
+	$uri .= ( isset( $pieces['port'] ) ) ? ':' . absint( $pieces['port'] ) : '';
+
+	// Add the scheme
+	$uri = 'https://' . $uri;
+
 	$response = wp_remote_get( $uri, array(
 		/**
 		 * Do a HEAD request for efficiency.
 		 */
-		'method'      => 'HEAD',
+		'method' => 'HEAD',
 
 		/**
 		 * HEAD requests will not redirect by default. It is important that redirection works in case the
@@ -251,8 +264,7 @@ if ( ! function_exists( 'mcd_uri_has_secure_version' ) ) :
  * @return bool              True if URI is connectable; false if it is not.
  */
 function mcd_uri_has_secure_version( $uri ) {
-	$https_uri = set_url_scheme( $uri, 'https' );
-	return mcd_is_valid_uri( $https_uri );
+	return mcd_is_valid_uri( $uri );
 }
 endif;
 
