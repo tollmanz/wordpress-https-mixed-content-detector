@@ -237,22 +237,14 @@ class MCD_Beacon {
 		// Clean the CSP data
 		$clean_data = $this->clean_csp_data( $contents['csp-report'] );
 
-		// Add a post for the report
-		$post_id = (int) wp_insert_post( array(
-			'post_type'   => 'csp-report',
-			'post_status' => 'publish',
-			'post_title'  => $this->sanitize_blocked_uri( $contents['csp-report']['blocked-uri'] ),
-		) );
+		// Store the report
+		$report_id = $this->create_report( $contents['csp-report']['blocked-uri'] );
 
-		// If the post was successfully inserted, add the metadata
-		if ( $post_id > 0 ) {
-			foreach ( $clean_data as $key => $value ) {
-				update_post_meta( $post_id, $key, $value );
-			}
-		}
+		// Store the associated data
+		$this->save_report_data( $report_id, $clean_data );
 
 		// Determine the location of the violation
-		mcd_locate_violation( $post_id );
+		mcd_locate_violation( $report_id );
 
 		// Check if the domain supports HTTPS
 		if ( isset( $clean_data['blocked-uri'] ) ) {
@@ -347,6 +339,38 @@ class MCD_Beacon {
 		}
 
 		return $clean_data;
+	}
+
+	/**
+	 * Create a new report post for a URI.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  string    $uri     URI for the resource causing the violation.
+	 * @return int                The report ID.
+	 */
+	public function create_report( $uri ) {
+		// Add a post for the report
+		return (int) wp_insert_post( array(
+			'post_type'   => 'csp-report',
+			'post_status' => 'publish',
+			'post_title'  => $this->sanitize_blocked_uri( $uri ),
+		) );
+	}
+
+	/**
+	 * Save associated metadata for a report.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  array    $data    The data for the URI.
+	 * @return void
+	 */
+	public function save_report_data( $post_id, $data ) {
+		// If the post was successfully inserted, add the metadata
+		foreach ( $data as $key => $value ) {
+			update_post_meta( $post_id, $key, $value );
+		}
 	}
 
 	/**
