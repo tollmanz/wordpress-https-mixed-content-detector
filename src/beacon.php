@@ -260,7 +260,7 @@ class MCD_Beacon {
 				$result = -1;
 			}
 
-			update_post_meta( $post_id, 'valid-https-uri', $result );
+			update_post_meta( $report_id, 'valid-https-uri', $result );
 		}
 
 		exit();
