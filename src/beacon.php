@@ -235,38 +235,8 @@ class MCD_Beacon {
 			exit;
 		}
 
-		// Clean the CSP data
-		$clean_data = $this->sanitize_csp_data( $contents['csp-report'] );
-
-		// Do not proceed if the blocked URI was not properly sanitized
-		if ( ! isset( $clean_data['blocked-uri'] ) ) {
-			exit;
-		}
-
-		$uri = $clean_data['blocked-uri'];
-
 		// Store the report
-		$report_id = $this->create_report( $uri );
-
-		// Store the associated data
-		$this->save_report_data( $report_id, $clean_data );
-
-		// Determine the location of the violation
-		mcd_locate_violation( $report_id );
-
-		/**
-		 * Check if the domain supports HTTPS
-		 *
-		 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
-		 * These are marked as -1 to represent an "unknown" status.
-		 */
-		if ( false !== strpos( $uri, 'http', 0 ) ) {
-			$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
-		} else {
-			$result = -1;
-		}
-
-		update_post_meta( $report_id, 'valid-https-uri', $result );
+		$this->save_report( $contents['csp-report'] );
 
 		exit();
 	}
@@ -310,6 +280,49 @@ class MCD_Beacon {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Given a report data, save the full report
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  array    $data    The raw data about the report.
+	 * @return void
+	 */
+	public function save_report( $data ) {
+		// Clean the CSP data
+		$clean_data = $this->sanitize_csp_data( $data );
+
+		// Do not proceed if the blocked URI was not properly sanitized
+		if ( ! isset( $clean_data['blocked-uri'] ) ) {
+			exit;
+		}
+
+		$uri = $clean_data['blocked-uri'];
+
+		// Store the report
+		$report_id = $this->create_report( $uri );
+
+		// Store the associated data
+		$this->save_report_data( $report_id, $clean_data );
+
+		// Determine the location of the violation
+		mcd_locate_violation( $report_id );
+
+		/**
+		 * Check if the domain supports HTTPS
+		 *
+		 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
+		 * These are marked as -1 to represent an "unknown" status.
+		 */
+		if ( false !== strpos( $uri, 'http', 0 ) ) {
+			$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
+		} else {
+			$result = -1;
+		}
+
+		update_post_meta( $report_id, 'valid-https-uri', $result );
 	}
 
 	/**
