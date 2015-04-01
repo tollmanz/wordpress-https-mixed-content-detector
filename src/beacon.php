@@ -234,26 +234,8 @@ class MCD_Beacon {
 			exit;
 		}
 
-		$clean_data = array();
-
-		// Cycle through each field in the report to make sure it is whitelisted
-		foreach ( $contents['csp-report'] as $field => $value ) {
-			// Verify that the field is valid
-			if ( in_array( $field, array_keys( $this->whitelisted_fields() ) ) ) {
-				$fields = $this->whitelisted_fields();
-
-				// Make sure that the sanitize callback is legit
-				if ( is_callable( $fields[ $field ]['sanitize_callback'] ) ) {
-					// Sanitize the value
-					$clean_data[ $field ] = call_user_func_array(
-						$fields[ $field ]['sanitize_callback'],
-						array(
-							$value
-						)
-					);
-				}
-			}
-		}
+		// Clean the CSP data
+		$clean_data = $this->clean_csp_data( $contents['csp-report'] );
 
 		// Add a post for the report
 		$post_id = (int) wp_insert_post( array(
@@ -331,6 +313,40 @@ class MCD_Beacon {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Take an array of CSP data and validate and sanitize it.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  array    $data    Array of CSP report data.
+	 * @return array             Cleaned CSP data.
+	 */
+	public function clean_csp_data( $data ) {
+		$clean_data = array();
+
+		// Cycle through each field in the report to make sure it is whitelisted
+		foreach ( $data as $field => $value ) {
+			// Verify that the field is valid
+			if ( in_array( $field, array_keys( $this->whitelisted_fields() ) ) ) {
+				$fields = $this->whitelisted_fields();
+
+				// Make sure that the sanitize callback is legit
+				if ( is_callable( $fields[ $field ]['sanitize_callback'] ) ) {
+
+					// Sanitize the value
+					$clean_data[ $field ] = call_user_func_array(
+						$fields[ $field ]['sanitize_callback'],
+						array(
+							$value
+						)
+					);
+				}
+			}
+		}
+
+		return $clean_data;
 	}
 
 	/**
