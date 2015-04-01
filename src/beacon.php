@@ -219,28 +219,11 @@ class MCD_Beacon {
 			status_header( 204 );
 		}
 
-		// Authenticate the request for either sampling mode or auth mode
-		if ( true === MCD_SAMPLE_MODE && ! is_user_logged_in() ) {
-			/**
-			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
-			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
-			 * simple method to only allow a certain number of requests.
-			 */
-			$max_range     = ceil( 100 / (float) MCD_SAMPLE_FREQUENCY );
-			$random_number = rand( 1, $max_range );
+		// Check if the request passes in either sampling or admin mode
+		$nonce = ( isset( $_GET['nonce'] ) ) ? $_GET['nonce'] : '';
 
-			if ( 1 !== $random_number ) {
-				exit;
-			}
-		} else {
-			// If you can turn on the plugin, the beacon should work for you
-			if ( ! current_user_can( 'activate_plugins' ) ) {
-				exit;
-			}
-		}
-
-		// Verify the nonce is set
-		if ( ! isset( $_GET['nonce'] ) || ! wp_verify_nonce( $_GET['nonce'], 'mcd-report-uri' ) ) {
+		// Verify that the request can be logged
+		if ( ! $this->authenticate_request( MCD_SAMPLE_MODE, is_user_logged_in(), MCD_SAMPLE_FREQUENCY, $nonce, 'mcd-report-uri' ) ) {
 			exit;
 		}
 
@@ -252,16 +235,116 @@ class MCD_Beacon {
 			exit;
 		}
 
+		// Store the report
+		$this->save_report( $contents['csp-report'] );
+
+		exit();
+	}
+
+	/**
+	 * Determine if a storage request is authenticated or not.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  bool      $sample_mode          Whether or not in sample mode.
+	 * @param  bool      $is_user_logged_in    Whether or not the user is logged in.
+	 * @param  int       $sample_frequency     The frequency of sampling.
+	 * @param  string    $nonce                The nonce value.
+	 * @param  string    $action               The nonce action.
+	 * @return bool                            Whether or not the request is authenticated.
+	 */
+	public function authenticate_request( $sample_mode, $is_user_logged_in, $sample_frequency, $nonce, $action ) {
+		// Authenticate the request for either sampling mode or auth mode
+		if ( true === $sample_mode && ! $is_user_logged_in ) {
+			/**
+			 * To accept every MCD_SAMPLE_FREQUENCY percent of requests in sample mode, pull a random number between
+			 * 1 and the percentage of requests we should accept. If that number is 1, accept the request. This is a
+			 * simple method to only allow a certain number of requests.
+			 */
+			$max_range     = ceil( 100 / (float) $sample_frequency );
+			$random_number = rand( 1, $max_range );
+
+			if ( 1 !== $random_number ) {
+				return false;
+			}
+		} else {
+			// If you can turn on the plugin, the beacon should work for you
+			if ( ! current_user_can( 'activate_plugins' ) ) {
+				return false;
+			}
+		}
+
+		// Verify the nonce is set
+		if ( ! wp_verify_nonce( $nonce, $action ) ) {
+			return false;
+		}
+
+		return true;
+	}
+
+	/**
+	 * Given a report data, save the full report
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  array    $data    The raw data about the report.
+	 * @return void
+	 */
+	public function save_report( $data ) {
+		// Clean the CSP data
+		$clean_data = $this->sanitize_csp_data( $data );
+
+		// Do not proceed if the blocked URI was not properly sanitized
+		if ( ! isset( $clean_data['blocked-uri'] ) ) {
+			exit;
+		}
+
+		$uri = $clean_data['blocked-uri'];
+
+		// Store the report
+		$report_id = $this->create_report( $uri );
+
+		// Store the associated data
+		$this->save_report_data( $report_id, $clean_data );
+
+		// Determine the location of the violation
+		mcd_locate_violation( $report_id );
+
+		/**
+		 * Check if the domain supports HTTPS
+		 *
+		 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
+		 * These are marked as -1 to represent an "unknown" status.
+		 */
+		if ( false !== strpos( $uri, 'http', 0 ) ) {
+			$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
+		} else {
+			$result = -1;
+		}
+
+		update_post_meta( $report_id, 'valid-https-uri', $result );
+	}
+
+	/**
+	 * Take an array of CSP data and validate and sanitize it.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  array    $data    Array of CSP report data.
+	 * @return array             Cleaned CSP data.
+	 */
+	public function sanitize_csp_data( $data ) {
 		$clean_data = array();
 
 		// Cycle through each field in the report to make sure it is whitelisted
-		foreach ( $contents['csp-report'] as $field => $value ) {
+		foreach ( $data as $field => $value ) {
 			// Verify that the field is valid
 			if ( in_array( $field, array_keys( $this->whitelisted_fields() ) ) ) {
 				$fields = $this->whitelisted_fields();
 
 				// Make sure that the sanitize callback is legit
 				if ( is_callable( $fields[ $field ]['sanitize_callback'] ) ) {
+
 					// Sanitize the value
 					$clean_data[ $field ] = call_user_func_array(
 						$fields[ $field ]['sanitize_callback'],
@@ -273,41 +356,39 @@ class MCD_Beacon {
 			}
 		}
 
+		return $clean_data;
+	}
+
+	/**
+	 * Create a new report post for a URI.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  string    $uri     URI for the resource causing the violation.
+	 * @return int                The report ID.
+	 */
+	public function create_report( $uri ) {
 		// Add a post for the report
-		$post_id = (int) wp_insert_post( array(
+		return (int) wp_insert_post( array(
 			'post_type'   => 'csp-report',
 			'post_status' => 'publish',
-			'post_title'  => $this->sanitize_blocked_uri( $contents['csp-report']['blocked-uri'] ),
+			'post_title'  => $this->sanitize_blocked_uri( $uri ),
 		) );
+	}
 
+	/**
+	 * Save associated metadata for a report.
+	 *
+	 * @since  1.3.0.
+	 *
+	 * @param  array    $data    The data for the URI.
+	 * @return void
+	 */
+	public function save_report_data( $post_id, $data ) {
 		// If the post was successfully inserted, add the metadata
-		if ( $post_id > 0 ) {
-			foreach ( $clean_data as $key => $value ) {
-				update_post_meta( $post_id, $key, $value );
-			}
+		foreach ( $data as $key => $value ) {
+			update_post_meta( $post_id, $key, $value );
 		}
-
-		// Determine the location of the violation
-		mcd_locate_violation( $post_id );
-
-		// Check if the domain supports HTTPS
-		if ( isset( $clean_data['blocked-uri'] ) ) {
-			$uri = $clean_data['blocked-uri'];
-
-			/**
-			 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
-			 * These are marked as -1 to represent an "unknown" status.
-			 */
-			if ( false !== strpos( $uri, 'http', 0 ) ) {
-				$result = ( true === mcd_uri_has_secure_version( $uri ) ) ? 1 : 0;
-			} else {
-				$result = -1;
-			}
-
-			update_post_meta( $post_id, 'valid-https-uri', $result );
-		}
-
-		exit();
 	}
 
 	/**
