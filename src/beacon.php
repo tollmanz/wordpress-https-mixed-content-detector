@@ -242,8 +242,10 @@ class MCD_Beacon {
 			exit;
 		}
 
+		$uri = $clean_data['blocked-uri'];
+
 		// Store the report
-		$report_id = $this->create_report( $clean_data['blocked-uri'] );
+		$report_id = $this->create_report( $uri );
 
 		// Store the associated data
 		$this->save_report_data( $report_id, $clean_data );
@@ -251,10 +253,9 @@ class MCD_Beacon {
 		// Determine the location of the violation
 		mcd_locate_violation( $report_id );
 
-		// Check if the domain supports HTTPS
-		$uri = $clean_data['blocked-uri'];
-
 		/**
+		 * Check if the domain supports HTTPS
+		 *
 		 * When checking the blocked URI, we are only interested in full URI. Relative URIs will not be checked.
 		 * These are marked as -1 to represent an "unknown" status.
 		 */
