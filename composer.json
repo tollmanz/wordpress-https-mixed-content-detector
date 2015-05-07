@@ -1,0 +1,16 @@
+{
+    "name": "tollmanz/mcd",
+    "description": "Detects and logs content that will cause mixed content warnings",
+    "type": "composer",
+    "authors": [
+        {
+            "name": "Zack Tollman",
+            "email": "tollmanz@gmail.com"
+        }
+    ],
+    "require": {},
+    "require-dev": {
+        "10up/wp_mock": "dev-master",
+        "phpunit/phpunit": "^4.6"
+    }
+}
